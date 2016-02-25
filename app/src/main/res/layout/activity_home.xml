@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical">
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/home_viewpager"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+    </android.support.v4.view.ViewPager>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:orientation="horizontal">
+
+        <me.liujia95.instantmessaging.view.ChangeColorIconWithText
+            android:id="@+id/home_indicator_one"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:padding="5dp"
+            app:color="#ff45c01a"
+            app:icon="@mipmap/ic_menu_start_conversation"
+            app:text="@string/app_name"
+            app:text_size="12sp"/>
+
+        <me.liujia95.instantmessaging.view.ChangeColorIconWithText
+            android:id="@+id/home_indicator_two"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:padding="5dp"
+            app:color="#ff45c01a"
+            app:icon="@mipmap/ic_menu_friendslist"
+            app:text="@string/tab_contact"
+            app:text_size="12sp"/>
+
+        <me.liujia95.instantmessaging.view.ChangeColorIconWithText
+            android:id="@+id/home_indicator_three"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:padding="5dp"
+            app:color="#ff45c01a"
+            app:icon="@mipmap/ic_menu_emoticons"
+            app:text="@string/tab_found"
+            app:text_size="12sp"/>
+
+        <me.liujia95.instantmessaging.view.ChangeColorIconWithText
+            android:id="@+id/home_indicator_four"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:padding="5dp"
+            app:color="#ff45c01a"
+            app:icon="@mipmap/ic_menu_allfriends"
+            app:text="@string/tab_me"
+            app:text_size="12sp"/>
+    </LinearLayout>
+
+</LinearLayout>
