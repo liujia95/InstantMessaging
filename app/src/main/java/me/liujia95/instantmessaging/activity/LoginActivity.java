@@ -9,9 +9,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.easemob.EMCallBack;
-import com.easemob.chat.EMChatManager;
-import com.easemob.chat.EMGroupManager;
+import com.hyphenate.EMCallBack;
+import com.hyphenate.chat.EMClient;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -74,29 +73,28 @@ public class LoginActivity extends Activity implements View.OnClickListener {
             return;
         }
 
-        EMChatManager.getInstance().login(username, password, new EMCallBack() {//回调
+        EMClient.getInstance().login(username, password, new EMCallBack() {//回调
             @Override
             public void onSuccess() {
                 runOnUiThread(new Runnable() {
                     public void run() {
-                        EMGroupManager.getInstance().loadAllGroups();
-                        EMChatManager.getInstance().loadAllConversations();
+                        EMClient.getInstance().groupManager().loadAllGroups();
+                        EMClient.getInstance().chatManager().loadAllConversations();
                         Log.d("main", "登陆聊天服务器成功！");
                         Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
                         startActivity(intent);
-                        finish();
                     }
                 });
             }
 
             @Override
             public void onProgress(int progress, String status) {
-                //TODO: 登录时的进度
+
             }
 
             @Override
             public void onError(int code, String message) {
-                Log.d("main", "登陆聊天服务器失败！code:"+code+"--message:"+message);
+                Log.d("main", "登陆聊天服务器失败！code:" + code + "--message:" + message);
             }
         });
     }

@@ -25,7 +25,7 @@
             android:padding="5dp"
             app:color="#ff45c01a"
             app:icon="@mipmap/ic_menu_start_conversation"
-            app:text="@string/app_name"
+            app:text="@string/tab_conversation"
             app:text_size="12sp"/>
 
         <me.liujia95.instantmessaging.view.ChangeColorIconWithText

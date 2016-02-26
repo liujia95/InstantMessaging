@@ -5,8 +5,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 
-import com.easemob.chat.EMContactManager;
-import com.easemob.exceptions.EaseMobException;
+import com.hyphenate.chat.EMClient;
+import com.hyphenate.exceptions.HyphenateException;
 
 import java.util.List;
 
@@ -44,11 +44,11 @@ public class ConversationFragment extends ParentFragment {
         ThreadPoolManager.getLongPool().execute(new Runnable() {
             @Override
             public void run() {
+                //获取好友列表 开发者需要根据username去自己服务器获取好友的详情
+                // 注：SDK不提供好友查找的服务, 如需要查找好友, 需要调用开发者自己服务器的用户查询接口
                 try {
-                    //获取好友列表
-                    // 注：SDK不提供好友查找的服务, 如需要查找好友, 需要调用开发者自己服务器的用户查询接口
-                    List<String> usernames = EMContactManager.getInstance().getContactUserNames();//需异步执行
-                } catch (EaseMobException e) {
+                    List<String> usernames = EMClient.getInstance().contactManager().getAllContactsFromServer();
+                } catch (HyphenateException e) {
                     e.printStackTrace();
                 }
             }

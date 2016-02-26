@@ -17,6 +17,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.hyphenate.chat.EMClient;
+import com.hyphenate.exceptions.HyphenateException;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -58,7 +61,6 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_home);
 
         setOverflowButtonAlways();//设置溢出菜单一直显示
-        getActionBar().setDisplayShowHomeEnabled(false);
 
         initView();
         initListener();
@@ -264,15 +266,24 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void onClick(View v) {
                 //TODO：添加好友
-                dialog.dismiss();
-
-                String username = et_username.getText().toString();
+                String toAddUsername = et_username.getText().toString();
                 String reason = et_reason.getText().toString();
-                if (TextUtils.isEmpty(username)) {
+                if (TextUtils.isEmpty(toAddUsername)) {
                     Toast.makeText(HomeActivity.this, "请输入好友帐号", Toast.LENGTH_SHORT).show();
+                    return;
                 } else if (TextUtils.isEmpty(reason)) {
                     Toast.makeText(HomeActivity.this, "请输入添加理由", Toast.LENGTH_SHORT).show();
+                    return;
                 }
+
+                try {
+                    EMClient.getInstance().contactManager().addContact(toAddUsername, reason);
+                } catch (HyphenateException e) {
+                    e.printStackTrace();
+                }
+
+                Toast.makeText(HomeActivity.this, "发送请求成功，等待对方验证", Toast.LENGTH_SHORT).show();
+                dialog.dismiss();
             }
         });
         btn_cancel.setOnClickListener(new View.OnClickListener() {

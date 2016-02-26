@@ -4,7 +4,8 @@ import android.app.Application;
 import android.content.Context;
 import android.os.Handler;
 
-import com.easemob.chat.EMChat;
+import com.hyphenate.chat.EMClient;
+import com.hyphenate.chat.EMOptions;
 
 /**
  * Created by Administrator on 2016/2/25 14:37.
@@ -29,15 +30,12 @@ public class BaseApplication extends Application {
         mHandler = new Handler();
         mContext = this;
 
-        EMChat.getInstance().init(this);
-        //设置需要自动登录
-        EMChat.getInstance().setAutoLogin(true);
-
-        /**
-         * debugMode == true 时为打开，sdk 会在log里输入调试信息
-         * @param debugMode
-         * 在做代码混淆的时候需要设置成false
-         */
-        EMChat.getInstance().setDebugMode(true);//在做打包混淆时，要关闭debug模式，避免消耗不必要的资源
+        EMOptions options = new EMOptions();
+        // 默认添加好友时，是不需要验证的，改成需要验证
+        options.setAcceptInvitationAlways(false);
+        //初始化
+        EMClient.getInstance().init(this, options);
+        //在做打包混淆时，关闭debug模式，避免消耗不必要的资源
+        EMClient.getInstance().setDebugMode(true);
     }
 }
