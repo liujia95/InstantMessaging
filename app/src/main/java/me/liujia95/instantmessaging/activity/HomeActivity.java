@@ -30,9 +30,8 @@ import butterknife.InjectView;
 import me.liujia95.instantmessaging.R;
 import me.liujia95.instantmessaging.base.ParentFragment;
 import me.liujia95.instantmessaging.fragment.ConversationFragment;
-import me.liujia95.instantmessaging.fragment.FindFragment;
 import me.liujia95.instantmessaging.fragment.FriendsListFragment;
-import me.liujia95.instantmessaging.fragment.MeFragment;
+import me.liujia95.instantmessaging.fragment.SettingFragment;
 import me.liujia95.instantmessaging.view.ChangeColorIconWithText;
 
 public class HomeActivity extends AppCompatActivity implements View.OnClickListener {
@@ -44,8 +43,6 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     ChangeColorIconWithText mIndicatorOne;
     @InjectView(R.id.home_indicator_two)
     ChangeColorIconWithText mIndicatorTwo;
-    @InjectView(R.id.home_indicator_three)
-    ChangeColorIconWithText mIndicatorThree;
     @InjectView(R.id.home_indicator_four)
     ChangeColorIconWithText mIndicatorFour;
 
@@ -67,7 +64,6 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         initDatas();
     }
 
-
     /**
      * 初始化控件
      */
@@ -75,7 +71,6 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         ButterKnife.inject(this);
         mTabIndicators.add(mIndicatorOne);
         mTabIndicators.add(mIndicatorTwo);
-        mTabIndicators.add(mIndicatorThree);
         mTabIndicators.add(mIndicatorFour);
     }
 
@@ -85,8 +80,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     private void initDatas() {
         mTabs.add(new ConversationFragment());
         mTabs.add(new FriendsListFragment());
-        mTabs.add(new FindFragment());
-        mTabs.add(new MeFragment());
+        mTabs.add(new SettingFragment());
 
         mAdapter = new FragmentPagerAdapter(getSupportFragmentManager()) {
             @Override
@@ -112,7 +106,6 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     private void initListener() {
         mIndicatorOne.setOnClickListener(this);
         mIndicatorTwo.setOnClickListener(this);
-        mIndicatorThree.setOnClickListener(this);
         mIndicatorFour.setOnClickListener(this);
 
         //默认第一个是不透明
@@ -158,13 +151,9 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                 mTabIndicators.get(1).setIconAlpha(1.0f);
                 mViewPager.setCurrentItem(1, false);
                 break;
-            case R.id.home_indicator_three:
+            case R.id.home_indicator_four:
                 mTabIndicators.get(2).setIconAlpha(1.0f);
                 mViewPager.setCurrentItem(2, false);
-                break;
-            case R.id.home_indicator_four:
-                mTabIndicators.get(3).setIconAlpha(1.0f);
-                mViewPager.setCurrentItem(3, false);
                 break;
         }
     }
@@ -188,7 +177,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
             Field menuKey = ViewConfiguration.class.getDeclaredField("sHasPermanentMenuKey");
 
             menuKey.setAccessible(true);
-            menuKey.setBoolean(config, false);
+            menuKey.setBoolean(config,false);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -228,17 +217,8 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.action_group_chat:
-                //TODO: 发起群聊
-                break;
             case R.id.action_add_friend:
                 clickAddFriend();
-                break;
-            case R.id.action_scan:
-                //TODO:扫一扫
-                break;
-            case R.id.action_feedback:
-                //TODO:意见反馈
                 break;
         }
         return super.onOptionsItemSelected(item);

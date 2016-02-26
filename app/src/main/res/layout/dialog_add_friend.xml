@@ -23,7 +23,7 @@
             android:id="@+id/addfriend_et_username"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/bg_edittext_selector"
+            android:background="@drawable/bg_edittext"
             android:lines="1"
             android:padding="4dp"/>
     </LinearLayout>
@@ -46,7 +46,7 @@
             android:id="@+id/addfriend_et_reason"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/bg_edittext_selector"
+            android:background="@drawable/bg_edittext"
             android:gravity="left"
             android:lines="3"
             android:padding="4dp"/>

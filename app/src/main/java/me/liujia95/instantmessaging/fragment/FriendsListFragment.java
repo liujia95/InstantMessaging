@@ -2,7 +2,9 @@ package me.liujia95.instantmessaging.fragment;
 
 import android.view.View;
 
+import me.liujia95.instantmessaging.R;
 import me.liujia95.instantmessaging.base.BaseFragment;
+import me.liujia95.instantmessaging.utils.UIUtils;
 
 
 /**
@@ -12,6 +14,7 @@ public class FriendsListFragment extends BaseFragment {
 
     @Override
     protected View onInitSuccessView() {
+        View.inflate(UIUtils.getContext(), R.layout.fragment_friendslist,null);
         return null;
     }
 

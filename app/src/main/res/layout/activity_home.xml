@@ -13,6 +13,7 @@
     </android.support.v4.view.ViewPager>
 
     <LinearLayout
+        android:background="@drawable/gray_top_line"
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:orientation="horizontal">
@@ -40,25 +41,14 @@
             app:text_size="12sp"/>
 
         <me.liujia95.instantmessaging.view.ChangeColorIconWithText
-            android:id="@+id/home_indicator_three"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:padding="5dp"
-            app:color="#ff45c01a"
-            app:icon="@mipmap/ic_menu_emoticons"
-            app:text="@string/tab_found"
-            app:text_size="12sp"/>
-
-        <me.liujia95.instantmessaging.view.ChangeColorIconWithText
             android:id="@+id/home_indicator_four"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:padding="5dp"
             app:color="#ff45c01a"
-            app:icon="@mipmap/ic_menu_allfriends"
-            app:text="@string/tab_me"
+            app:icon="@mipmap/ic_menu_setting"
+            app:text="@string/tab_setting"
             app:text_size="12sp"/>
     </LinearLayout>
 
