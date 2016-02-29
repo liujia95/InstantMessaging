@@ -11,7 +11,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewConfiguration;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
@@ -20,7 +19,6 @@ import android.widget.Toast;
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.exceptions.HyphenateException;
 
-import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +27,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import me.liujia95.instantmessaging.R;
 import me.liujia95.instantmessaging.base.ParentFragment;
-import me.liujia95.instantmessaging.fragment.ConversationFragment;
+import me.liujia95.instantmessaging.fragment.ConversationListFragment;
 import me.liujia95.instantmessaging.fragment.FriendsListFragment;
 import me.liujia95.instantmessaging.fragment.SettingFragment;
 import me.liujia95.instantmessaging.view.ChangeColorIconWithText;
@@ -57,8 +55,6 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        setOverflowButtonAlways();//设置溢出菜单一直显示
-
         initView();
         initListener();
         initDatas();
@@ -78,7 +74,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
      * 初始化数据
      */
     private void initDatas() {
-        mTabs.add(new ConversationFragment());
+        mTabs.add(new ConversationListFragment());
         mTabs.add(new FriendsListFragment());
         mTabs.add(new SettingFragment());
 
@@ -164,23 +160,6 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     private void resetOtherTabs() {
         for (int i = 0; i < mTabIndicators.size(); i++) {
             mTabIndicators.get(i).setIconAlpha(0);
-        }
-    }
-
-    /**
-     * 设置溢出菜单一直显示
-     */
-    private void setOverflowButtonAlways() {
-        try {
-            ViewConfiguration config = ViewConfiguration.get(this);
-
-            Field menuKey = ViewConfiguration.class.getDeclaredField("sHasPermanentMenuKey");
-
-            menuKey.setAccessible(true);
-            menuKey.setBoolean(config,false);
-
-        } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 

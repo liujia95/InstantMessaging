@@ -80,7 +80,7 @@ public class LoginActivity extends Activity implements View.OnClickListener {
                     public void run() {
                         EMClient.getInstance().groupManager().loadAllGroups();
                         EMClient.getInstance().chatManager().loadAllConversations();
-                        Log.d("main", "登陆聊天服务器成功！");
+                        Log.d("main", username+"登陆聊天服务器成功！");
                         Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
                         startActivity(intent);
                     }

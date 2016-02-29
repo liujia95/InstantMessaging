@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import java.util.List;
 
 import me.liujia95.instantmessaging.R;
-import me.liujia95.instantmessaging.bean.ConversationBean;
+import me.liujia95.instantmessaging.db.model.ConversationModel;
 import me.liujia95.instantmessaging.utils.UIUtils;
 import me.liujia95.instantmessaging.viewholder.ConversationViewHolder;
 
@@ -17,9 +17,9 @@ import me.liujia95.instantmessaging.viewholder.ConversationViewHolder;
  */
 public class ConversationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    List<ConversationBean> mDatas;
+    List<ConversationModel> mDatas;
 
-    public ConversationAdapter(List<ConversationBean> datas) {
+    public ConversationAdapter(List<ConversationModel> datas) {
         this.mDatas = datas;
     }
 
@@ -37,6 +37,9 @@ public class ConversationAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
     @Override
     public int getItemCount() {
-        return mDatas.size();
+        if(mDatas!=null){
+            return mDatas.size();
+        }
+        return 0;
     }
 }

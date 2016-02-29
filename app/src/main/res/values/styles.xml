@@ -7,11 +7,6 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
 
-        <!-- API 14 theme customizations can go here. -->
-        <item name="android:actionOverflowButtonStyle">@style/actionOverflowButtonStyle</item>
     </style>
 
-    <style name="actionOverflowButtonStyle">
-        <item name="android:src">@mipmap/actionbar_add_icon</item>
-    </style>
 </resources>
