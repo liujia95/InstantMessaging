@@ -15,4 +15,16 @@ public class ConversationModel {
     public String         message;        //消息
     public long           date;           //时间
 
+    @Override
+    public String toString() {
+        return "ConversationModel{" +
+                "id='" + id + '\'' +
+                ", from='" + from + '\'' +
+                ", to='" + to + '\'' +
+                ", messageType=" + messageType +
+                ", messageState=" + messageState +
+                ", message='" + message + '\'' +
+                ", date=" + date +
+                '}';
+    }
 }

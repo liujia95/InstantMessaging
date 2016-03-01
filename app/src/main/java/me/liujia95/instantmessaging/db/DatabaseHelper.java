@@ -50,18 +50,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             RecentConversationDao.COLUMN_NAME_DATE + " VARCHAR(255) NOT NULL )";
 
 
-    public static String INIT_MESSAGE_TYPE = "INSERT INTO message_type(_type) values(\"txt\");" +
-            "INSERT INTO message_type(_type) values(\"image\");" +
-            "INSERT INTO message_type(_type) values(\"video\");" +
-            "INSERT INTO message_type(_type) values(\"location\");" +
-            "INSERT INTO message_type(_type) values(\"voice\");" +
-            "INSERT INTO message_type(_type) values(\"file\");" +
-            "INSERT INTO message_type(_type) values(\"cmd\");";
+    private static String INIT_MESSAGE_TYPE_TXT      = "INSERT INTO message_type(_type) values(\"TXT\");";
+    private static String INIT_MESSAGE_TYPE_IMAGE    = "INSERT INTO message_type(_type) values(\"IMAGE\");";
+    private static String INIT_MESSAGE_TYPE_VIDEO    = "INSERT INTO message_type(_type) values(\"VIDEO\");";
+    private static String INIT_MESSAGE_TYPE_LOCATION = "INSERT INTO message_type(_type) values(\"LOCATION\");";
+    private static String INIT_MESSAGE_TYPE_VOICE    = "INSERT INTO message_type(_type) values(\"VOICE\");";
+    private static String INIT_MESSAGE_TYPE_FILE     = "INSERT INTO message_type(_type) values(\"FILE\");";
+    private static String INIT_MESSAGE_TYPE_CMD      = "INSERT INTO message_type(_type) values(\"CMD\");";
 
-    public static String INIT_MESSAGE_STATE = "INSERT INTO message_state(_state) values(\"unread\");" +
-            "INSERT INTO message_state(_state) values(\"read\");" +
-            "INSERT INTO message_state(_state) values(\"undelivered\");" +
-            "INSERT INTO message_state(_state) values(\"delivered\");";
+    private static String INIT_MESSAGE_STATE_UNREAD      = "INSERT INTO message_state(_state) values(\"UNREAD\");";
+    private static String INIT_MESSAGE_STATE_READ        = "INSERT INTO message_state(_state) values(\"READ\");";
+    private static String INIT_MESSAGE_STATE_UNDELIVERED = "INSERT INTO message_state(_state) values(\"UNDELIVERED\");";
+    private static String INIT_MESSAGE_STATE_DELIVERED   = "INSERT INTO message_state(_state) values(\"DELIVERED\");";
 
     public DatabaseHelper() {
         super(UIUtils.getContext(), DB_NAME, null, DB_VERSION);
@@ -77,8 +77,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL(CREATE_TABLE_RECENT_CONVERSATION);
 
         //初始化数据库中的数据
-        db.execSQL(INIT_MESSAGE_TYPE);
-        db.execSQL(INIT_MESSAGE_STATE);
+        db.execSQL(INIT_MESSAGE_TYPE_TXT);
+        db.execSQL(INIT_MESSAGE_TYPE_IMAGE);
+        db.execSQL(INIT_MESSAGE_TYPE_VIDEO);
+        db.execSQL(INIT_MESSAGE_TYPE_LOCATION);
+        db.execSQL(INIT_MESSAGE_TYPE_VOICE);
+        db.execSQL(INIT_MESSAGE_TYPE_FILE);
+        db.execSQL(INIT_MESSAGE_TYPE_CMD);
+
+        db.execSQL(INIT_MESSAGE_STATE_UNREAD);
+        db.execSQL(INIT_MESSAGE_STATE_READ);
+        db.execSQL(INIT_MESSAGE_STATE_UNDELIVERED);
+        db.execSQL(INIT_MESSAGE_STATE_DELIVERED);
     }
 
     @Override

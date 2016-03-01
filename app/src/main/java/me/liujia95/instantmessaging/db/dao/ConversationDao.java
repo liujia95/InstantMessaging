@@ -12,6 +12,7 @@ import java.util.List;
 import me.liujia95.instantmessaging.db.DatabaseHelper;
 import me.liujia95.instantmessaging.db.model.ConversationModel;
 import me.liujia95.instantmessaging.db.model.MessageState;
+import me.liujia95.instantmessaging.utils.LogUtils;
 
 /**
  * Created by Administrator on 2016/2/29 15:39.
@@ -27,7 +28,7 @@ public class ConversationDao {
     public static final String COLUMN_NAME_MESSAGE          = "_message";
     public static final String COLUMN_NAME_DATE             = "_date";
 
-    public static DatabaseHelper mHelper = new DatabaseHelper();
+    private static DatabaseHelper mHelper = new DatabaseHelper();
 
     public static long insert(ConversationModel model) {
         SQLiteDatabase db = mHelper.getWritableDatabase();
@@ -52,6 +53,7 @@ public class ConversationDao {
     public static List<ConversationModel> selectAll(String to) {
         SQLiteDatabase db = mHelper.getReadableDatabase();
         Cursor cursor = db.query("(SELECT conversation._id, _from, _to , _type ,_state ,_message, _date FROM conversation, message_type,message_state where _message_type_id = message_type._id and _message_state_id = message_state._id )", new String[]{COLUMN_NAME_ID, COLUMN_NAME_FROM, COLUMN_NAME_TO, MessageTypeDao.COLUMN_NAME_TYPE, MessageStateDao.COLUMN_NAME_STATE, COLUMN_NAME_MESSAGE, COLUMN_NAME_DATE}, "_from =? or _to=?", new String[]{to, to}, null, null, null);
+        LogUtils.d("===cursor count:::" + cursor.getCount());
 
         List<ConversationModel> list = new ArrayList<>();
         while (cursor.moveToNext()) {
@@ -61,12 +63,17 @@ public class ConversationDao {
             model.to = cursor.getString(2);
             model.messageType = getMessageType(cursor.getString(3));
             model.messageState = getMessageState(cursor.getString(4));
-            model.date = Long.valueOf(cursor.getString(5));
+            model.message = cursor.getString(5);
+            model.date = Long.valueOf(cursor.getString(6));
+
+            LogUtils.d("===moveToNext:"+model.toString());
 
             list.add(model);
         }
         cursor.close();
         db.close();
+
+        LogUtils.d("===list size:::"+list.size());
 
         return list;
     }

@@ -18,6 +18,7 @@ import me.liujia95.instantmessaging.R;
 import me.liujia95.instantmessaging.adapter.ConversationAdapter;
 import me.liujia95.instantmessaging.base.ParentFragment;
 import me.liujia95.instantmessaging.db.dao.ConversationDao;
+import me.liujia95.instantmessaging.db.dao.RecentConversationDao;
 import me.liujia95.instantmessaging.db.model.ConversationModel;
 import me.liujia95.instantmessaging.db.model.MessageState;
 import me.liujia95.instantmessaging.utils.LogUtils;
@@ -43,8 +44,7 @@ public class ConversationListFragment extends ParentFragment {
 
     @Override
     public void initData() {
-        mDatas = ConversationDao.selectAll(EMClient.getInstance().getCurrentUser());
-        ;
+        mDatas = RecentConversationDao.selectAll(EMClient.getInstance().getCurrentUser());
 
         mAdapter = new ConversationAdapter(mDatas);
 
@@ -76,15 +76,23 @@ public class ConversationListFragment extends ParentFragment {
                     model.from = message.getFrom();
                     model.to = message.getTo();
                     model.messageType = message.getType();
-                    model.messageState = MessageState.UNDELIVERED;//默认未送达
+                    model.messageState = MessageState.UNREAD;//如果接受到了，是未读状态
                     model.date = message.getMsgTime();
                     String body = message.getBody().toString();
-                    body = body.substring((body.indexOf(":\"") + 1), body.lastIndexOf("\""));
-                    LogUtils.d("body:---" + body);
+                    body = body.substring((body.indexOf("\"") + 1), body.lastIndexOf("\""));
                     model.message = body;
 
-                    //添加到数据库
-                    ConversationDao.insert(model);
+                    //添加到会话的数据库
+                    long result = ConversationDao.insert(model);
+                    if (RecentConversationDao.isChated(message.getFrom())) {
+                        //如果跟他聊过，更新最新聊天记录
+                        int update = RecentConversationDao.update(model, EMClient.getInstance().getCurrentUser());
+                        LogUtils.d("***聊过:" + update);
+                    } else {
+                        //如果没跟他聊过，插入一条
+                        long insert = RecentConversationDao.insert(model);
+                        LogUtils.d("***没聊过:" + insert);
+                    }
 
                     updateUI();
                 }
@@ -118,10 +126,17 @@ public class ConversationListFragment extends ParentFragment {
         EMClient.getInstance().chatManager().addMessageListener(msgListener);
     }
 
+    /**
+     * 刷新界面
+     */
     public void updateUI() {
-        LogUtils.d("----currentUser::" + EMClient.getInstance().getCurrentUser());
-        mDatas = ConversationDao.selectAll(EMClient.getInstance().getCurrentUser());
-        LogUtils.d("mDatas count:" + mDatas.size());
-        mAdapter.notifyDataSetChanged();
+        mDatas = RecentConversationDao.selectAll(EMClient.getInstance().getCurrentUser());
+        UIUtils.post(new Runnable() {
+            @Override
+            public void run() {
+                mAdapter.setData(mDatas);
+                mAdapter.notifyDataSetChanged();
+            }
+        });
     }
 }

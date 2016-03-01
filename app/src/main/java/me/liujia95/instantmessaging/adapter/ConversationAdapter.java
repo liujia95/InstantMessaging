@@ -23,6 +23,10 @@ public class ConversationAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         this.mDatas = datas;
     }
 
+    public void setData(List<ConversationModel> datas){
+        this.mDatas = datas;
+    }
+
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(UIUtils.getContext()).inflate(R.layout.item_conversation, parent, false);

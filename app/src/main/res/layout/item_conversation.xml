@@ -22,6 +22,7 @@
 
 
         <ImageView
+            android:id="@+id/item_conversation_red_point"
             android:layout_width="10dp"
             android:layout_height="10dp"
             android:layout_alignParentRight="true"

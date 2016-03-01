@@ -11,6 +11,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import me.liujia95.instantmessaging.R;
 import me.liujia95.instantmessaging.db.model.ConversationModel;
+import me.liujia95.instantmessaging.db.model.MessageState;
 import me.liujia95.instantmessaging.utils.DateUtils;
 
 /**
@@ -26,6 +27,8 @@ public class ConversationViewHolder extends RecyclerView.ViewHolder {
     TextView  mTvDesc;
     @InjectView(R.id.item_conversation_tv_time)
     TextView  mTvTime;
+    @InjectView(R.id.item_conversation_red_point)
+    ImageView mIvRedPoint;
 
     public ConversationViewHolder(View itemView) {
         super(itemView);
@@ -39,5 +42,9 @@ public class ConversationViewHolder extends RecyclerView.ViewHolder {
         Date date = new Date(Long.valueOf(bean.date));
         String dateFormat = DateUtils.getDateFormat(date.getTime());
         mTvTime.setText(dateFormat);
+
+        if(bean.messageState == MessageState.UNREAD){
+
+        }
     }
 }
