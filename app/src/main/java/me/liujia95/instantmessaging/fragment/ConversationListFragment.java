@@ -21,13 +21,14 @@ import me.liujia95.instantmessaging.db.dao.ConversationDao;
 import me.liujia95.instantmessaging.db.dao.RecentConversationDao;
 import me.liujia95.instantmessaging.db.model.ConversationModel;
 import me.liujia95.instantmessaging.db.model.MessageState;
+import me.liujia95.instantmessaging.utils.ConversationUtils;
 import me.liujia95.instantmessaging.utils.LogUtils;
 import me.liujia95.instantmessaging.utils.UIUtils;
 
 /**
  * Created by Administrator on 2016/2/12 16:25.
  */
-public class ConversationListFragment extends ParentFragment {
+public class ConversationListFragment extends ParentFragment implements ConversationAdapter.OnItemClickListener {
 
     @InjectView(R.id.conversation_recyclerview)
     RecyclerView mRecyclerView;
@@ -124,6 +125,8 @@ public class ConversationListFragment extends ParentFragment {
             }
         };
         EMClient.getInstance().chatManager().addMessageListener(msgListener);
+
+        mAdapter.setOnItemClickListener(this);
     }
 
     /**
@@ -138,5 +141,15 @@ public class ConversationListFragment extends ParentFragment {
                 mAdapter.notifyDataSetChanged();
             }
         });
+    }
+
+    @Override
+    public void onItemClick(View view, ConversationModel model) {
+        //获取会话对象
+        String chatObj = ConversationUtils.getChatObj(model);
+        //查询本用户与此会话对象的所有会话
+        List<ConversationModel> list = ConversationDao.selectAllByChatObj(chatObj, EMClient.getInstance().getCurrentUser());
+        //遍历与其的所有会话
+        ConversationUtils.ergodicConvertion(list);
     }
 }

@@ -9,6 +9,7 @@ import java.util.List;
 
 import me.liujia95.instantmessaging.db.DatabaseHelper;
 import me.liujia95.instantmessaging.db.model.ConversationModel;
+import me.liujia95.instantmessaging.db.model.MessageState;
 import me.liujia95.instantmessaging.utils.LogUtils;
 
 /**
@@ -40,6 +41,8 @@ public class RecentConversationDao {
             }
         }
         LogUtils.d("*****is Chated::false");
+        cursor.close();
+        db.close();
         return false;
     }
 
@@ -82,6 +85,24 @@ public class RecentConversationDao {
         values.put(COLUMN_NAME_DATE, model.date);
 
         int result = db.update(TABLE_NAME, values, "_from=? or _to=?", new String[]{username, username});
+        db.close();
+        return result;
+    }
+
+    /**
+     * 根据id修改信息状态
+     *
+     * @param state
+     * @return
+     */
+    public static int updateMessageState(int id, MessageState state) {
+        SQLiteDatabase db = mHelper.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_NAME_MESSAGE_STATE_ID, MessageStateDao.getIdFromState(state.toString()));
+        int result = db.update(TABLE_NAME, values, "_id=?", new String[]{id + ""});
+        //TODO：测试
+        LogUtils.d("recent updateMessageState result:" + result + " -- state:" + state.toString());
+        db.close();
         return result;
     }
 
