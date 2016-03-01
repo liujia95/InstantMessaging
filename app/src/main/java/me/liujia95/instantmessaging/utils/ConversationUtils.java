@@ -30,7 +30,7 @@ public class ConversationUtils {
         for (ConversationModel model : list) {
             LogUtils.d("------------------------");
             LogUtils.d("date:" + DateUtils.getDateFormat(model.date));
-            LogUtils.d("from0.0:" + model.from);
+            LogUtils.d("from:" + model.from);
             LogUtils.d("to:" + model.to);
             LogUtils.d("message:" + model.message);
             LogUtils.d("------------------------");

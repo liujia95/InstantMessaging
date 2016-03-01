@@ -5,65 +5,71 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.hyphenate.chat.EMClient;
+
 import java.util.List;
 
 import me.liujia95.instantmessaging.R;
 import me.liujia95.instantmessaging.db.model.ConversationModel;
 import me.liujia95.instantmessaging.utils.UIUtils;
-import me.liujia95.instantmessaging.viewholder.ConversationViewHolder;
+import me.liujia95.instantmessaging.viewholder.ConversationMyTXTViewHolder;
+import me.liujia95.instantmessaging.viewholder.ConversationYourTXTViewHolder;
 
 /**
- * Created by Administrator on 2016/2/12 17:16.
+ * Created by Administrator on 2016/3/1 14:37.
  */
-public class ConversationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements View.OnClickListener {
+public class ConversationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+    private List<ConversationModel> mDatas;
 
-    List<ConversationModel> mDatas;
+    private static final int TYPE_MY_TXT   = 0;
+    private static final int TYPE_YOUR_TXT = 1;
 
-    private OnItemClickListener mOnItemClickListener = null;
 
-    public ConversationAdapter(List<ConversationModel> datas) {
-        this.mDatas = datas;
+    public ConversationAdapter(List<ConversationModel> list) {
+        mDatas = list;
     }
 
-    public void setData(List<ConversationModel> datas) {
-        this.mDatas = datas;
+    public void setData(List<ConversationModel> list) {
+        mDatas = list;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        ConversationModel model = mDatas.get(position);
+        if (model.from.equals(EMClient.getInstance().getCurrentUser())) {
+            //谁发的消息，就代表谁说的话
+            return TYPE_MY_TXT;
+        }
+        return TYPE_YOUR_TXT;
     }
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(UIUtils.getContext()).inflate(R.layout.item_conversation, parent, false);
-        view.setOnClickListener(this);
-        return new ConversationViewHolder(view);
+        if (viewType == TYPE_MY_TXT) {
+            View view = LayoutInflater.from(UIUtils.getContext()).inflate(R.layout.item_conversation_my_txt, parent, false);
+            return new ConversationMyTXTViewHolder(view);
+        } else if (viewType == TYPE_YOUR_TXT) {
+            View view = LayoutInflater.from(UIUtils.getContext()).inflate(R.layout.item_conversation_your_txt, parent, false);
+            return new ConversationYourTXTViewHolder(view);
+        }
+        return null;
     }
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        ConversationViewHolder viewholder = (ConversationViewHolder) holder;
-        viewholder.loadData(mDatas.get(position));
-        viewholder.itemView.setTag(mDatas.get(position));
+        int viewType = getItemViewType(position);
+        ConversationModel model = mDatas.get(position);
+        if (viewType == TYPE_MY_TXT) {
+            ConversationMyTXTViewHolder viewholder = (ConversationMyTXTViewHolder) holder;
+            viewholder.loadData(model);
+        } else if (viewType == TYPE_YOUR_TXT) {
+            ConversationYourTXTViewHolder viewholder = (ConversationYourTXTViewHolder) holder;
+            viewholder.loadData(model);
+        }
     }
 
     @Override
     public int getItemCount() {
-        if (mDatas != null) {
-            return mDatas.size();
-        }
-        return 0;
-    }
-
-    public void setOnItemClickListener(OnItemClickListener listener) {
-        this.mOnItemClickListener = listener;
-    }
-
-    @Override
-    public void onClick(View v) {
-        if (mOnItemClickListener != null) {
-            //获取数据
-            mOnItemClickListener.onItemClick(v, (ConversationModel) v.getTag());
-        }
-    }
-
-    public interface OnItemClickListener {
-        void onItemClick(View view, ConversationModel model);
+        return mDatas.size();
     }
 }

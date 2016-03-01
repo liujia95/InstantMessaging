@@ -1,5 +1,6 @@
 package me.liujia95.instantmessaging.fragment;
 
+import android.content.Intent;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -15,7 +16,8 @@ import java.util.List;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import me.liujia95.instantmessaging.R;
-import me.liujia95.instantmessaging.adapter.ConversationAdapter;
+import me.liujia95.instantmessaging.activity.ConversationActivity;
+import me.liujia95.instantmessaging.adapter.ConversationListAdapter;
 import me.liujia95.instantmessaging.base.ParentFragment;
 import me.liujia95.instantmessaging.db.dao.ConversationDao;
 import me.liujia95.instantmessaging.db.dao.RecentConversationDao;
@@ -28,13 +30,15 @@ import me.liujia95.instantmessaging.utils.UIUtils;
 /**
  * Created by Administrator on 2016/2/12 16:25.
  */
-public class ConversationListFragment extends ParentFragment implements ConversationAdapter.OnItemClickListener {
+public class ConversationListFragment extends ParentFragment implements ConversationListAdapter.OnItemClickListener {
 
-    @InjectView(R.id.conversation_recyclerview)
+    @InjectView(R.id.conversation_list_recyclerview)
     RecyclerView mRecyclerView;
 
     List<ConversationModel> mDatas;
-    private ConversationAdapter mAdapter;
+    private ConversationListAdapter mAdapter;
+
+    public static final String KEY_CHAT_OBJ = "key_chat_obj";
 
     @Override
     protected View initView(LayoutInflater inflater) {
@@ -47,7 +51,7 @@ public class ConversationListFragment extends ParentFragment implements Conversa
     public void initData() {
         mDatas = RecentConversationDao.selectAll(EMClient.getInstance().getCurrentUser());
 
-        mAdapter = new ConversationAdapter(mDatas);
+        mAdapter = new ConversationListAdapter(mDatas);
 
         mRecyclerView.setLayoutManager(new LinearLayoutManager(UIUtils.getContext()));
         mRecyclerView.setAdapter(mAdapter);
@@ -147,9 +151,9 @@ public class ConversationListFragment extends ParentFragment implements Conversa
     public void onItemClick(View view, ConversationModel model) {
         //获取会话对象
         String chatObj = ConversationUtils.getChatObj(model);
-        //查询本用户与此会话对象的所有会话
-        List<ConversationModel> list = ConversationDao.selectAllByChatObj(chatObj, EMClient.getInstance().getCurrentUser());
-        //遍历与其的所有会话
-        ConversationUtils.ergodicConvertion(list);
+
+        Intent intent = new Intent(getActivity(), ConversationActivity.class);
+        intent.putExtra(KEY_CHAT_OBJ, chatObj);
+        startActivity(intent);
     }
 }

@@ -35,8 +35,7 @@ import me.liujia95.instantmessaging.view.ChangeColorIconWithText;
 public class HomeActivity extends AppCompatActivity implements View.OnClickListener {
 
     @InjectView(R.id.home_viewpager)
-    ViewPager mViewPager;
-
+    ViewPager               mViewPager;
     @InjectView(R.id.home_indicator_one)
     ChangeColorIconWithText mIndicatorOne;
     @InjectView(R.id.home_indicator_two)
