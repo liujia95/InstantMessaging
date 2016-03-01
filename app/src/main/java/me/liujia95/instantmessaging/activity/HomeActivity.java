@@ -136,7 +136,6 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onClick(View v) {
         resetOtherTabs();
-
         switch (v.getId()) {
             case R.id.home_indicator_one:
                 mTabIndicators.get(0).setIconAlpha(1.0f);
