@@ -105,5 +105,8 @@ public class LoginActivity extends Activity implements View.OnClickListener {
      * 点击注册
      */
     private void clickRegister() {
+        Intent intent = new Intent(this,ChattingActivity.class);
+        startActivity(intent);
+
     }
 }

@@ -7,7 +7,6 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -16,20 +15,28 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.hyphenate.EMMessageListener;
 import com.hyphenate.chat.EMClient;
+import com.hyphenate.chat.EMMessage;
 import com.hyphenate.exceptions.HyphenateException;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import me.liujia95.instantmessaging.R;
 import me.liujia95.instantmessaging.base.ParentFragment;
+import me.liujia95.instantmessaging.db.dao.ConversationDao;
+import me.liujia95.instantmessaging.db.dao.RecentConversationDao;
+import me.liujia95.instantmessaging.db.model.ConversationModel;
 import me.liujia95.instantmessaging.fragment.ConversationListFragment;
 import me.liujia95.instantmessaging.fragment.FriendsListFragment;
 import me.liujia95.instantmessaging.fragment.SettingFragment;
+import me.liujia95.instantmessaging.utils.ConversationUtils;
+import me.liujia95.instantmessaging.utils.LogUtils;
 import me.liujia95.instantmessaging.view.ChangeColorIconWithText;
 
 public class HomeActivity extends AppCompatActivity implements View.OnClickListener {
@@ -48,6 +55,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     private FragmentPagerAdapter mAdapter;
 
     private List<ChangeColorIconWithText> mTabIndicators = new ArrayList<>();
+    private ConversationListFragment mConversationListFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,7 +81,8 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
      * 初始化数据
      */
     private void initDatas() {
-        mTabs.add(new ConversationListFragment());
+        mConversationListFragment = new ConversationListFragment();
+        mTabs.add(mConversationListFragment);
         mTabs.add(new FriendsListFragment());
         mTabs.add(new SettingFragment());
 
@@ -131,6 +140,69 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
             }
         });
+
+
+        EMMessageListener msgListener = new EMMessageListener() {
+            @Override
+            public void onMessageReceived(List<EMMessage> messages) {
+                //收到消息
+                LogUtils.d("===收到消息：" + messages.size() + "个");
+                for (EMMessage message : messages) {
+                    LogUtils.d("===message:" + message.toString());
+                    LogUtils.d("===getBody:[" + message.getBody().toString() + "]");
+                    LogUtils.d("===getMsgId:" + message.getMsgId());
+                    LogUtils.d("===getUserName:" + message.getUserName());
+                    LogUtils.d("===getFrom:" + message.getFrom());
+                    LogUtils.d("===getTo:" + message.getTo());
+                    long msgMillis = message.getMsgTime();
+                    LogUtils.d("===getMsgTime:" + msgMillis);
+                    Date date = new Date(msgMillis);
+                    LogUtils.d("===11时间：" + date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds());
+
+
+                    ConversationModel model = ConversationUtils.getMessageToModel(message);
+
+                    //添加到会话的数据库
+                    ConversationDao.insert(model);
+                    if (RecentConversationDao.isChated(message.getFrom())) {
+                        //如果跟他聊过，更新最新聊天记录
+                        RecentConversationDao.update(model, EMClient.getInstance().getCurrentUser());
+                    } else {
+                        //如果没跟他聊过，插入一条
+                        RecentConversationDao.insert(model);
+                    }
+
+                    //设置监听
+                    mMessageListener.onHasNewMessage(model);
+                }
+            }
+
+            @Override
+            public void onCmdMessageReceived(List<EMMessage> messages) {
+                //收到透传消息
+                LogUtils.d("收到透传消息：----");
+            }
+
+            @Override
+            public void onMessageReadAckReceived(List<EMMessage> messages) {
+                //收到已读回执
+                LogUtils.d("已读：----");
+
+            }
+
+            @Override
+            public void onMessageDeliveryAckReceived(List<EMMessage> message) {
+                //收到已送达回执
+                LogUtils.d("已送达：----");
+            }
+
+            @Override
+            public void onMessageChanged(EMMessage message, Object change) {
+                //消息状态变动
+                LogUtils.d("消息状态变动: message:" + message + "--change:" + change);
+            }
+        };
+        EMClient.getInstance().chatManager().addMessageListener(msgListener);
     }
 
     @Override
@@ -173,7 +245,6 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         if (featureId == Window.FEATURE_ACTION_BAR && menu != null) {
             if (menu.getClass().getSimpleName().equals("MenuBuilder")) {
                 try {
-                    Log.d("HomeActivity", "onMenuOpened");
                     Method m = menu.getClass().getDeclaredMethod("setOptionalIconsVisible", Boolean.TYPE);
                     m.setAccessible(true);
                     m.invoke(menu, true);
@@ -250,4 +321,17 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
             }
         });
     }
+
+
+    private OnMessageListener mMessageListener;
+
+    public void setMessageListener(OnMessageListener messageListener) {
+        this.mMessageListener = messageListener;
+    }
+
+    public interface OnMessageListener {
+        void onHasNewMessage(ConversationModel model);
+    }
+
+
 }

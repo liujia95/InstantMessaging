@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
-              android:padding="5dp"
+              android:padding="3dp"
               android:background="@color/colorConversationBg"
               android:orientation="horizontal">
 
@@ -12,10 +12,11 @@
         android:orientation="horizontal">
 
         <ImageView
+            android:src="@drawable/em_default_avatar"
             android:id="@+id/item_conversation_your_txt_iv_icon"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:layout_marginRight="5dp"
+            android:layout_margin="5dp"
             android:background="#00f"/>
 
         <TextView
@@ -29,7 +30,8 @@
             android:paddingLeft="15dp"
             android:paddingRight="10dp"
             android:gravity="center_vertical"
-            android:text="AAAAAAAAAAAA"
+            android:lineSpacingMultiplier="1.2"
+            android:text="AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
             android:textColor="#DD000000"
             android:textSize="18sp"/>
     </LinearLayout>

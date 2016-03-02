@@ -29,10 +29,10 @@ public abstract class ParentFragment extends Fragment {
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
         initData();
         initListener();
         loadData();
-        super.onActivityCreated(savedInstanceState);
     }
 
     /**

@@ -11,6 +11,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import me.liujia95.instantmessaging.R;
 import me.liujia95.instantmessaging.db.model.ConversationModel;
+import me.liujia95.instantmessaging.utils.ConversationUtils;
 import me.liujia95.instantmessaging.utils.DateUtils;
 
 /**
@@ -35,7 +36,8 @@ public class ConversationViewHolder extends RecyclerView.ViewHolder {
     }
 
     public void loadData(ConversationModel bean) {
-        mTvTitle.setText(bean.from);
+        String chatObj = ConversationUtils.getChatObj(bean);
+        mTvTitle.setText(chatObj);
         mTvDesc.setText(bean.message);
         //将时间转换
         Date date = new Date(Long.valueOf(bean.date));

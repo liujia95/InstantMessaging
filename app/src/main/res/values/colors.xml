@@ -5,5 +5,9 @@
     <color name="colorAccent">#FF4081</color>
 
     <color name="colorConversationBg">#EBEBEB</color>
+    <color name="chatting_list_background">#ebebeb</color>
+    <color name="translucent">#00000000</color>
 
+    <color name="color_item_select">#66666666</color>
+    <color name="color_light_gray">#F2F2F2</color>
 </resources>

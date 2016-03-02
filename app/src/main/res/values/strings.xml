@@ -13,4 +13,14 @@
     <string name="tab_conversation">会话</string>
     <string name="tab_contact">通讯录</string>
     <string name="tab_setting">设置</string>
+
+    <string name="press_say">按住说话</string>
+    <string name="send">发送</string>
+    <string name="site">位置</string>
+    <string name="picture">照片</string>
+
+    <string name="apply_and_notification">申请与通知</string>
+    <string name="group_chat">群聊</string>
+    <string name="chat_room">聊天室</string>
+    <string name="huanxin_helper">环信小助手</string>
 </resources>

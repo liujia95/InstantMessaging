@@ -30,7 +30,8 @@ public class ConversationAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     }
 
     public void setData(List<ConversationModel> list) {
-        mDatas = list;
+        mDatas =list;
+        notifyDataSetChanged();
     }
 
     @Override

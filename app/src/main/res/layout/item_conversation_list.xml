@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="match_parent"
               android:layout_height="65dp"
-              android:background="#fff"
+              android:background="@drawable/ripple_bg"
               android:clickable="true"
               android:orientation="horizontal">
 
@@ -19,7 +19,7 @@
             android:layout_marginLeft="13dp"
             android:layout_marginRight="13dp"
             android:layout_marginTop="6dp"
-            android:background="#00f"/>
+            android:src="@drawable/em_default_avatar"/>
 
 
         <ImageView
