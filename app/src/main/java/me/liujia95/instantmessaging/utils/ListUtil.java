@@ -7,6 +7,8 @@ import java.util.List;
 import me.liujia95.instantmessaging.bean.FriendInfoBean;
 
 public class ListUtil {
+
+    //把传过来的集合进行排序
     public static void sortList(List<FriendInfoBean> list) {
         List<FriendInfoBean> _List = new ArrayList<>();
         Collections.sort(list, new PinyinComparator());

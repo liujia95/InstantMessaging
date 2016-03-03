@@ -112,6 +112,7 @@ public class SlideBar extends Button {
                     }
                     break;
                 case MotionEvent.ACTION_UP:
+                case MotionEvent.ACTION_CANCEL:
                     disShowCharacter();
                     mSelectIndex = -1;
                     break;

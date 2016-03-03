@@ -4,6 +4,9 @@ import java.util.Comparator;
 
 import me.liujia95.instantmessaging.bean.FriendInfoBean;
 
+/**
+ * 自定义排序器
+ */
 public class PinyinComparator implements Comparator<FriendInfoBean> {
     public int compare(FriendInfoBean o1, FriendInfoBean o2) {
         if (o1.item_en.equals("@")

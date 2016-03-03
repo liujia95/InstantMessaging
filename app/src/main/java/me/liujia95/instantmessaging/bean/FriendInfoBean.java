@@ -10,9 +10,9 @@ public class FriendInfoBean {
     public String name;
 
     public static final int TYPE_CHARACTER = 0; //首字母item的类型
-    public static final int TYPE_DATA = 1;      //数据类型
-    public int item_type;                      //类型
-    public String item_en;
+    public static final int TYPE_DATA      = 1;      //数据类型
+    public int    item_type;                      //类型
+    public String item_en;                      //根据这个来排序的
 
     public FriendInfoBean() {
     }
@@ -22,21 +22,24 @@ public class FriendInfoBean {
 
         CharacterParser parser = CharacterParser.getInstance();
         this.name = name;
+        //将词组转换成大写拼音
         this.item_en = parser.getSelling(name).toUpperCase().trim();
-        if(!item_en.matches("[A-Z]+")){
-            item_en = "#"+item_en;
+        //如果首字符不是字母
+        if (!item_en.matches("[A-Z]+")) {
+            item_en = "#" + item_en;
         }
     }
 
-    public FriendInfoBean(int avatar, String name,int type) {
+    public FriendInfoBean(int avatar, String name, int type) {
         this.avatar = avatar;
 
         CharacterParser parser = CharacterParser.getInstance();
         this.name = name;
         this.item_type = type;
         this.item_en = parser.getSelling(name).toUpperCase().trim();
-        if(!item_en.matches("[A-Z]+")){
-            item_en = "#"+item_en;
+
+        if (!item_en.matches("[A-Z]+")) {
+            item_en = "#" + item_en;
         }
     }
 

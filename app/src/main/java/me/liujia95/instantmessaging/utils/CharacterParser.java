@@ -1,14 +1,8 @@
-/*
- * Filename	CharacterParser.java
- * Company	�Ϻ�����-�ֶ��ֹ�˾��
- * @author	LuRuihui
- * @version	0.1
- */
 package me.liujia95.instantmessaging.utils;
 
 /**
- * Java����ת��Ϊƴ��
- * 
+ * Java汉字转换为拼音
+ *
  */
 public class CharacterParser {
 	private static int[] pyvalue = new int[] {-20319, -20317, -20304, -20295, -20292, -20283, -20265, -20257, -20242, -20230, -20051, -20036, -20032,
@@ -72,9 +66,9 @@ public class CharacterParser {
 	public void setResource(String resource) {
 		this.resource = resource;
 	}
-	
 
-	/** * ����ת��ASCII�� * * @param chs * @return */
+
+	/** * 汉字转成ASCII码 * * @param chs * @return */
 	private int getChsAscii(String chs) {
 		int asc = 0;
 		try {
@@ -96,7 +90,7 @@ public class CharacterParser {
 		return asc;
 	}
 
-	/** * ���ֽ��� * * @param str * @return */
+	/** * 单字解析 * * @param str * @return */
 	public String convert(String str) {
 		String result = null;
 		int ascii = getChsAscii(str);
@@ -113,7 +107,7 @@ public class CharacterParser {
 		return result;
 	}
 
-	/** * ������� * * @param chs * @return */
+	/** * 词组解析 * * @param chs * @return */
 	public  String getSelling(String chs) {
 		String key, value;
 		buffer = new StringBuilder();
