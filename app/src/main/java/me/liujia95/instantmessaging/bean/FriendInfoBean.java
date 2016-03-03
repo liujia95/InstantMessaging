@@ -25,7 +25,7 @@ public class FriendInfoBean {
         //将词组转换成大写拼音
         this.item_en = parser.getSelling(name).toUpperCase().trim();
         //如果首字符不是字母
-        if (!item_en.matches("[A-Z]+")) {
+        if (!item_en.matches("[A-Z].+")) {
             item_en = "#" + item_en;
         }
     }
@@ -38,7 +38,7 @@ public class FriendInfoBean {
         this.item_type = type;
         this.item_en = parser.getSelling(name).toUpperCase().trim();
 
-        if (!item_en.matches("[A-Z]+")) {
+        if (!item_en.matches("[A-Z].+")) {
             item_en = "#" + item_en;
         }
     }
