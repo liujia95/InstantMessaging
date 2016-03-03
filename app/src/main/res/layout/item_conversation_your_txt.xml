@@ -17,7 +17,7 @@
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_margin="5dp"
-            android:background="#00f"/>
+            />
 
         <TextView
             android:id="@+id/item_conversation_your_txt_tv_message"
@@ -33,7 +33,7 @@
             android:lineSpacingMultiplier="1.2"
             android:text="AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
             android:textColor="#DD000000"
-            android:textSize="18sp"/>
+            android:textSize="15sp"/>
     </LinearLayout>
 
 </LinearLayout>

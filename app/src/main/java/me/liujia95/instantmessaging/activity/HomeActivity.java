@@ -1,5 +1,8 @@
 package me.liujia95.instantmessaging.activity;
 
+import android.app.ActivityManager;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -38,8 +41,10 @@ import me.liujia95.instantmessaging.db.model.ConversationModel;
 import me.liujia95.instantmessaging.fragment.ConversationListFragment;
 import me.liujia95.instantmessaging.fragment.FriendsListFragment;
 import me.liujia95.instantmessaging.fragment.SettingFragment;
+import me.liujia95.instantmessaging.receiver.GCMPushBroadCast;
 import me.liujia95.instantmessaging.utils.ConversationUtils;
 import me.liujia95.instantmessaging.utils.LogUtils;
+import me.liujia95.instantmessaging.utils.UIUtils;
 import me.liujia95.instantmessaging.view.ChangeColorIconWithText;
 
 public class HomeActivity extends AppCompatActivity implements View.OnClickListener {
@@ -162,8 +167,18 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                     Date date = new Date(msgMillis);
                     LogUtils.d("===11时间：" + date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds());
 
-
                     ConversationModel model = ConversationUtils.getMessageToModel(message);
+
+                    ActivityManager am = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+
+                    if(!UIUtils.getRunningActivityName().equals(ChattingActivity.class.getName())){
+                        Intent intent = new Intent();
+                        intent.putExtra(GCMPushBroadCast.NOTIFICATION_MESSAGE, model.message);
+                        intent.setAction("com.hyphenate.sdk.push");
+                        intent.addCategory("com.hyphenate.chatuidemo");
+                        sendBroadcast(intent);
+                        LogUtils.d("@@发了一条广播");
+                    }
 
                     //添加到会话的数据库
                     ConversationDao.insert(model);
@@ -215,19 +230,20 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         @Override
         public void onConnected() {
         }
+
         @Override
         public void onDisconnected(final int error) {
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    if(error == EMError.USER_REMOVED){
+                    if (error == EMError.USER_REMOVED) {
                         // 显示帐号已经被移除
                         LogUtils.d("@@帐号被移除");
-                    }else if (error == EMError.USER_LOGIN_ANOTHER_DEVICE) {
+                    } else if (error == EMError.USER_LOGIN_ANOTHER_DEVICE) {
                         // 显示帐号在其他设备登陆
                         LogUtils.d("@@帐号在其他设备登陆");
                     } else {
-                        if (NetUtils.hasNetwork(HomeActivity.this)){
+                        if (NetUtils.hasNetwork(HomeActivity.this)) {
                             //连接不到聊天服务器
                             LogUtils.d("@@连接不到聊天服务器");
                         } else {
@@ -367,6 +383,5 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     public interface OnMessageListener {
         void onHasNewMessage(ConversationModel model);
     }
-
 
 }

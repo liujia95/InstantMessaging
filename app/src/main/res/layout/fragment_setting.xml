@@ -11,7 +11,11 @@
         <Button
             android:id="@+id/setting_btn_logout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="44dp"
+            android:layout_marginBottom="12dp"
+            android:layout_marginLeft="20dip"
+            android:layout_marginRight="20dip"
+            android:layout_marginTop="10dp"
             android:background="@android:color/holo_red_light"
             android:text="@string/logout_this_user"
             android:textColor="@android:color/white"

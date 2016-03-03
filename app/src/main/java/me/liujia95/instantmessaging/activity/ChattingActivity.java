@@ -36,7 +36,6 @@ import me.liujia95.instantmessaging.db.dao.ConversationDao;
 import me.liujia95.instantmessaging.db.dao.RecentConversationDao;
 import me.liujia95.instantmessaging.db.model.ConversationModel;
 import me.liujia95.instantmessaging.db.model.MessageState;
-import me.liujia95.instantmessaging.fragment.ConversationListFragment;
 import me.liujia95.instantmessaging.utils.ConversationUtils;
 import me.liujia95.instantmessaging.utils.LogUtils;
 
@@ -80,6 +79,19 @@ public class ChattingActivity extends AppCompatActivity implements View.OnClickL
         initData();
         initListener();
     }
+
+//    @Override
+//    protected void onNewIntent(Intent intent) {
+//        // 点击notification bar进入聊天页面，保证只有一个聊天页面
+//        String username = intent.getStringExtra(KEY_CHAT_OBJ);
+//        if (mChatObj.equals(username))
+//            super.onNewIntent(intent);
+//        else {
+//            finish();
+//            startActivity(intent);
+//        }
+//
+//    }
 
     private void initData() {
         Intent intent = getIntent();
@@ -152,6 +164,8 @@ public class ChattingActivity extends AppCompatActivity implements View.OnClickL
                 //收到消息
                 for (EMMessage message : messages) {
                     ConversationModel model = ConversationUtils.getMessageToModel(message);
+
+                    LogUtils.d("##Chatting中收到消息");
 
                     mDatas.add(model);
                     mAdapter.setData(mDatas);

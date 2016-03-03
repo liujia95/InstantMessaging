@@ -1,5 +1,6 @@
 package me.liujia95.instantmessaging.utils;
 
+import android.app.ActivityManager;
 import android.content.Context;
 import android.content.res.Resources;
 import android.os.Handler;
@@ -70,4 +71,9 @@ public class UIUtils {
         return width;
     }
 
+    public static String getRunningActivityName() {
+        ActivityManager activityManager = (ActivityManager) getContext().getSystemService(Context.ACTIVITY_SERVICE);
+        String runningActivity = activityManager.getRunningTasks(1).get(0).topActivity.getClassName();
+        return runningActivity;
+    }
 }

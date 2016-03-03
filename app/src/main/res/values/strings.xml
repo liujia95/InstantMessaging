@@ -25,6 +25,8 @@
     <string name="huanxin_helper">环信小助手</string>
     <string name="logout_this_user">退出当前帐号</string>
 
+    <string name="login">登录</string>
+    <string name="register">没有帐号？点击注册</string>
 
     <!--测试数据-->
     <string-array name="array_name">
