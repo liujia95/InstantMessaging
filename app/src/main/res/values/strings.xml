@@ -23,4 +23,28 @@
     <string name="group_chat">群聊</string>
     <string name="chat_room">聊天室</string>
     <string name="huanxin_helper">环信小助手</string>
+
+
+    <!--测试数据-->
+    <string-array name="array_name">
+        <item>鸣人</item>
+        <item>佐助</item>
+        <item>小樱</item>
+        <item>鹿丸</item>
+        <item>丁次</item>
+        <item>井野</item>
+        <item>雏田</item>
+        <item>牙</item>
+        <item>志乃</item>
+        <item>#志乃</item>
+        <item>12志乃</item>
+        <item>卡卡西</item>
+        <item>凯</item>
+        <item>天天</item>
+        <item>宁次</item>
+        <item>小李</item>
+        <item>我爱罗</item>
+        <item>勘九郎</item>
+        <item>大蛇丸</item>
+    </string-array>
 </resources>

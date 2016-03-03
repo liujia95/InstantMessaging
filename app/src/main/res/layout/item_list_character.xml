@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="20dp"
+    android:background="#EBEBEB">
+    <TextView
+        android:layout_centerVertical="true"
+        android:id="@+id/tv_item_character"
+        android:layout_width="wrap_content"
+       	android:layout_height="20dp"
+        android:layout_marginLeft="15.0dip"
+        android:singleLine="true"
+        android:text="name"
+        android:textColor="#A8A8A8" />
+</RelativeLayout>

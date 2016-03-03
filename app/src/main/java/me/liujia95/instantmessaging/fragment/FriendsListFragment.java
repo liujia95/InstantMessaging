@@ -1,5 +1,6 @@
 package me.liujia95.instantmessaging.fragment;
 
+import android.os.SystemClock;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -19,24 +20,28 @@ import me.liujia95.instantmessaging.adapter.FriendListAdapter;
 import me.liujia95.instantmessaging.base.ParentFragment;
 import me.liujia95.instantmessaging.bean.FriendInfoBean;
 import me.liujia95.instantmessaging.manager.ThreadPoolManager;
+import me.liujia95.instantmessaging.utils.ListUtil;
 import me.liujia95.instantmessaging.utils.LogUtils;
 import me.liujia95.instantmessaging.utils.UIUtils;
+import me.liujia95.instantmessaging.view.SlideBar;
 
 
 /**
  * Created by Administrator on 2016/2/12 16:26.
  */
-public class FriendsListFragment extends ParentFragment implements FriendListAdapter.OnItemClickListener {
+public class FriendsListFragment extends ParentFragment implements FriendListAdapter.OnItemClickListener, SlideBar.OnTouchAssortListener {
 
     private List<FriendInfoBean> mDatas;
     private FriendListAdapter    mAdapter;
 
     @InjectView(R.id.friendlist_recyclerview)
     RecyclerView mRecyclerView;
+    @InjectView(R.id.friendlist_slidebar)
+    SlideBar     mSlidebar;
 
     @Override
     protected View initView(LayoutInflater inflater) {
-        View view = View.inflate(UIUtils.getContext(), R.layout.fragment_friendslist, null);
+        View view = inflater.inflate(R.layout.fragment_friendslist, null);
         ButterKnife.inject(this, view);
         return view;
     }
@@ -44,15 +49,13 @@ public class FriendsListFragment extends ParentFragment implements FriendListAda
     @Override
     public void initData() {
         mDatas = new ArrayList<>();
-        mDatas.add(new FriendInfoBean(R.drawable.em_add_public_group, UIUtils.getString(R.string.apply_and_notification)));
-        mDatas.add(new FriendInfoBean(R.drawable.em_groups_icon, UIUtils.getString(R.string.group_chat)));
-        mDatas.add(new FriendInfoBean(R.drawable.em_groups_icon, UIUtils.getString(R.string.chat_room)));
-        mDatas.add(new FriendInfoBean(R.drawable.em_groups_icon, UIUtils.getString(R.string.huanxin_helper)));
 
-        mAdapter = new FriendListAdapter(mDatas);
-
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(UIUtils.getContext()));
-        mRecyclerView.setAdapter(mAdapter);
+        //TODO:测试用
+        String[] names = UIUtils.getStringArray(R.array.array_name);
+        for (String s : names) {
+            FriendInfoBean bean = new FriendInfoBean(R.drawable.em_default_avatar, s, FriendInfoBean.TYPE_DATA);
+            mDatas.add(bean);
+        }
 
         ThreadPoolManager.getLongPool().execute(new Runnable() {
             @Override
@@ -63,15 +66,10 @@ public class FriendsListFragment extends ParentFragment implements FriendListAda
                     List<String> list = EMClient.getInstance().contactManager().getAllContactsFromServer();
                     //都设成默认头像
                     for (String s : list) {
-
                         LogUtils.d("-- 好友名字：" + s);
-
-                        FriendInfoBean bean = new FriendInfoBean();
-                        bean.avatar = R.drawable.em_default_avatar;
-                        bean.name = s;
+                        FriendInfoBean bean = new FriendInfoBean(R.drawable.em_default_avatar, s, FriendInfoBean.TYPE_DATA);
                         mDatas.add(bean);
                     }
-
                     LogUtils.d("*** 好友(个)：" + mDatas.size());
 
                     UIUtils.post(new Runnable() {
@@ -85,6 +83,17 @@ public class FriendsListFragment extends ParentFragment implements FriendListAda
                 }
             }
         });
+
+        SystemClock.sleep(200);//TODO：测试用
+
+        //排序
+        ListUtil.sortList(mDatas);
+
+        mAdapter = new FriendListAdapter(mDatas);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(UIUtils.getContext()));
+        mRecyclerView.setAdapter(mAdapter);
+
+
     }
 
     @Override
@@ -126,10 +135,14 @@ public class FriendsListFragment extends ParentFragment implements FriendListAda
         });
 
         mAdapter.setOnItemClickListener(this);
+        mSlidebar.setOnTouchAssortListener(this);
     }
 
     @Override
     public void onItemClick(View view, FriendInfoBean bean) {
+        if (bean.item_type == FriendInfoBean.TYPE_CHARACTER) {
+            return;
+        }
         if (bean.name.equals(UIUtils.getString(R.string.apply_and_notification))) {
 
         } else if (bean.name.equals(UIUtils.getString(R.string.group_chat))) {
@@ -140,4 +153,34 @@ public class FriendsListFragment extends ParentFragment implements FriendListAda
 
         }
     }
+
+    /**
+     * @param s 右侧索引点击下去的字母
+     */
+    @Override
+    public void onTouchAssortListener(String s) {
+        if (s.equals("↑")) {
+            //如果是箭头回到最上面
+            LinearLayoutManager manager = (LinearLayoutManager) mRecyclerView.getLayoutManager();
+            manager.scrollToPositionWithOffset(0, 0);
+            return;
+        }
+        int select = getSelectIndex(s);
+        if (select != -1) {
+            select += 4; //TODO:定位到的位置还需+应用自带的4个item
+            LinearLayoutManager manager = (LinearLayoutManager) mRecyclerView.getLayoutManager();
+            manager.scrollToPositionWithOffset(select, 0);
+        }
+    }
+
+    private int getSelectIndex(String s) {
+        for (int i = 0; i < mDatas.size(); i++) {
+            String name = mDatas.get(i).name;
+            if (name.equals(s)) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
 }
