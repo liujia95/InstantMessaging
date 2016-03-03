@@ -1,10 +1,12 @@
 package me.liujia95.instantmessaging.fragment;
 
+import android.content.Intent;
 import android.os.SystemClock;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Toast;
 
 import com.hyphenate.EMContactListener;
 import com.hyphenate.chat.EMClient;
@@ -16,6 +18,7 @@ import java.util.List;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import me.liujia95.instantmessaging.R;
+import me.liujia95.instantmessaging.activity.ChattingActivity;
 import me.liujia95.instantmessaging.adapter.FriendListAdapter;
 import me.liujia95.instantmessaging.base.ParentFragment;
 import me.liujia95.instantmessaging.bean.FriendInfoBean;
@@ -144,13 +147,20 @@ public class FriendsListFragment extends ParentFragment implements FriendListAda
             return;
         }
         if (bean.name.equals(UIUtils.getString(R.string.apply_and_notification))) {
-
+            Toast.makeText(getActivity(), "申请与通知", Toast.LENGTH_SHORT).show();
         } else if (bean.name.equals(UIUtils.getString(R.string.group_chat))) {
+            Toast.makeText(getActivity(), "群聊", Toast.LENGTH_SHORT).show();
 
         } else if (bean.name.equals(UIUtils.getString(R.string.chat_room))) {
+            Toast.makeText(getActivity(), "聊天室", Toast.LENGTH_SHORT).show();
 
         } else if (bean.name.equals(UIUtils.getString(R.string.huanxin_helper))) {
-
+            Toast.makeText(getActivity(), "环信小助手", Toast.LENGTH_SHORT).show();
+        } else {
+            //点击联系人，跳转到会话界面
+            Intent intent = new Intent(getActivity(), ChattingActivity.class);
+            intent.putExtra(ChattingActivity.KEY_CHAT_OBJ, bean.name);
+            startActivity(intent);
         }
     }
 

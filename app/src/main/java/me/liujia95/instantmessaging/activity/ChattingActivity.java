@@ -68,6 +68,8 @@ public class ChattingActivity extends AppCompatActivity implements View.OnClickL
     private List<ConversationModel> mDatas;
     private ConversationAdapter     mAdapter;
 
+    public static String KEY_CHAT_OBJ = "key_chat_obj"; //聊天对象
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -81,7 +83,7 @@ public class ChattingActivity extends AppCompatActivity implements View.OnClickL
 
     private void initData() {
         Intent intent = getIntent();
-        mChatObj = intent.getStringExtra(ConversationListFragment.KEY_CHAT_OBJ);
+        mChatObj = intent.getStringExtra(KEY_CHAT_OBJ);
 
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {

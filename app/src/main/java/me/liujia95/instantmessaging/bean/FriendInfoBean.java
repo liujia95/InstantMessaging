@@ -17,27 +17,14 @@ public class FriendInfoBean {
     public FriendInfoBean() {
     }
 
-    public FriendInfoBean(int avatar, String name) {
-        this.avatar = avatar;
-
-        CharacterParser parser = CharacterParser.getInstance();
-        this.name = name;
-        //将词组转换成大写拼音
-        this.item_en = parser.getSelling(name).toUpperCase().trim();
-        //如果首字符不是字母
-        if (!item_en.matches("[A-Z].+")) {
-            item_en = "#" + item_en;
-        }
-    }
-
     public FriendInfoBean(int avatar, String name, int type) {
         this.avatar = avatar;
 
         CharacterParser parser = CharacterParser.getInstance();
         this.name = name;
         this.item_type = type;
+        //将词组转换成大写拼音
         this.item_en = parser.getSelling(name).toUpperCase().trim();
-
         if (!item_en.matches("[A-Z].+")) {
             item_en = "#" + item_en;
         }

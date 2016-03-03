@@ -35,11 +35,15 @@ public class LoginActivity extends Activity implements View.OnClickListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         initView();
+        initData();
         initListener();
     }
 
     private void initView() {
         ButterKnife.inject(this);
+    }
+
+    private void initData() {
     }
 
     private void initListener() {
@@ -78,7 +82,9 @@ public class LoginActivity extends Activity implements View.OnClickListener {
             public void onSuccess() {
                 runOnUiThread(new Runnable() {
                     public void run() {
+                        //从本地数据库加载群组到内存的操作
                         EMClient.getInstance().groupManager().loadAllGroups();
+                        //从本地数据库加载聊天记录到内存的操作
                         EMClient.getInstance().chatManager().loadAllConversations();
                         Log.d("main", username + "登陆聊天服务器成功！");
                         Intent intent = new Intent(LoginActivity.this, HomeActivity.class);

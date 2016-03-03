@@ -33,8 +33,6 @@ public class ConversationListFragment extends ParentFragment implements Conversa
     List<ConversationModel> mDatas;
     private ConversationListAdapter mAdapter;
 
-    public static final String KEY_CHAT_OBJ      = "key_chat_obj";
-
     @Override
     protected View initView(LayoutInflater inflater) {
         View view = inflater.inflate(R.layout.fragment_conversation_list, null);
@@ -85,7 +83,7 @@ public class ConversationListFragment extends ParentFragment implements Conversa
         String chatObj = ConversationUtils.getChatObj(model);
 
         Intent intent = new Intent(getActivity(), ChattingActivity.class);
-        intent.putExtra(KEY_CHAT_OBJ, chatObj);
+        intent.putExtra(ChattingActivity.KEY_CHAT_OBJ, chatObj);
         startActivity(intent);
     }
 

@@ -23,6 +23,7 @@
     <string name="group_chat">群聊</string>
     <string name="chat_room">聊天室</string>
     <string name="huanxin_helper">环信小助手</string>
+    <string name="logout_this_user">退出当前帐号</string>
 
 
     <!--测试数据-->
@@ -47,4 +48,6 @@
         <item>勘九郎</item>
         <item>大蛇丸</item>
     </string-array>
+
+    <string name="Version_number_is_wrong">Version number is wrong</string>
 </resources>
