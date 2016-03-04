@@ -23,6 +23,7 @@ import me.liujia95.instantmessaging.adapter.ConversationListAdapter;
 import me.liujia95.instantmessaging.base.ParentFragment;
 import me.liujia95.instantmessaging.db.dao.RecentConversationDao;
 import me.liujia95.instantmessaging.db.model.ConversationModel;
+import me.liujia95.instantmessaging.manager.RedPointManager;
 import me.liujia95.instantmessaging.utils.ConversationUtils;
 import me.liujia95.instantmessaging.utils.LogUtils;
 import me.liujia95.instantmessaging.utils.UIUtils;
@@ -65,7 +66,13 @@ public class ConversationListFragment extends ParentFragment implements Conversa
         homeActivity.setMessageListener(new HomeActivity.OnMessageListener() {
             @Override
             public void onHasNewMessage(ConversationModel model) {
+                LogUtils.d("___onHasNewMessage");
+                //刷新界面
                 refreshUI();
+
+                //显示小红点
+                String chatObj = ConversationUtils.getChatObj(model);
+                RedPointManager.getInstance().show(chatObj);
             }
         });
 
@@ -83,7 +90,7 @@ public class ConversationListFragment extends ParentFragment implements Conversa
 
         @Override
         public void onDisconnected(final int error) {
-            getActivity().runOnUiThread(new Runnable() {
+            UIUtils.post(new Runnable() {
                 @Override
                 public void run() {
                     if (error == EMError.USER_REMOVED) {
@@ -112,7 +119,6 @@ public class ConversationListFragment extends ParentFragment implements Conversa
             @Override
             public void run() {
                 if (mRlNetworkAnomaly.getVisibility() == View.GONE) {
-                    LogUtils.d("@@显示");
                     mRlNetworkAnomaly.setVisibility(View.VISIBLE);
                 }
             }
@@ -124,7 +130,6 @@ public class ConversationListFragment extends ParentFragment implements Conversa
             @Override
             public void run() {
                 if (mRlNetworkAnomaly.getVisibility() == View.VISIBLE) {
-                    LogUtils.d("@@不显示");
                     mRlNetworkAnomaly.setVisibility(View.GONE);
                 }
             }
@@ -136,7 +141,13 @@ public class ConversationListFragment extends ParentFragment implements Conversa
      */
     public void refreshUI() {
         mDatas = RecentConversationDao.selectAll(EMClient.getInstance().getCurrentUser());
-        UIUtils.post(new Runnable() {
+        for (ConversationModel m : mDatas) {
+            LogUtils.d("mmmm");
+            LogUtils.d("____ :" + m.from);
+            LogUtils.d("____ :" + m.to);
+            LogUtils.d("____ :" + m.message);
+        }
+        getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 mAdapter.setData(mDatas);
@@ -153,6 +164,9 @@ public class ConversationListFragment extends ParentFragment implements Conversa
         Intent intent = new Intent(getActivity(), ChattingActivity.class);
         intent.putExtra(ChattingActivity.KEY_CHAT_OBJ, chatObj);
         startActivity(intent);
+
+        //去掉小红点
+        RedPointManager.getInstance().disShow(chatObj);
     }
 
     @Override

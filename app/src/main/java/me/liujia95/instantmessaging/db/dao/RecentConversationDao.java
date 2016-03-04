@@ -34,16 +34,17 @@ public class RecentConversationDao {
     public static boolean isChated(String username) {
         SQLiteDatabase db = mHelper.getReadableDatabase();
         Cursor cursor = db.rawQuery("SELECT count(*) FROM recent_conversation WHERE _from=? or _to=?", new String[]{username, username});
+        boolean isChated = false;
         if (cursor.moveToNext()) {
             if (cursor.getInt(0) != 0) {
-                LogUtils.d("*****is Chated::true");
-                return true;
+                isChated = true;
             }
         }
-        LogUtils.d("*****is Chated::false");
         cursor.close();
         db.close();
-        return false;
+        LogUtils.d("*****is Chated::" + isChated);
+
+        return isChated;
     }
 
     /**

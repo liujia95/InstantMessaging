@@ -36,8 +36,10 @@ import me.liujia95.instantmessaging.db.dao.ConversationDao;
 import me.liujia95.instantmessaging.db.dao.RecentConversationDao;
 import me.liujia95.instantmessaging.db.model.ConversationModel;
 import me.liujia95.instantmessaging.db.model.MessageState;
+import me.liujia95.instantmessaging.manager.RedPointManager;
 import me.liujia95.instantmessaging.utils.ConversationUtils;
 import me.liujia95.instantmessaging.utils.LogUtils;
+import me.liujia95.instantmessaging.utils.UIUtils;
 
 /**
  * 适配了 Panel<->Keybord 切换冲突
@@ -80,18 +82,19 @@ public class ChattingActivity extends AppCompatActivity implements View.OnClickL
         initListener();
     }
 
-//    @Override
-//    protected void onNewIntent(Intent intent) {
-//        // 点击notification bar进入聊天页面，保证只有一个聊天页面
-//        String username = intent.getStringExtra(KEY_CHAT_OBJ);
-//        if (mChatObj.equals(username))
-//            super.onNewIntent(intent);
-//        else {
-//            finish();
-//            startActivity(intent);
-//        }
-//
-//    }
+    //    @Override
+    //    protected void onNewIntent(Intent intent) {
+    //        // 点击notification bar进入聊天页面，保证只有一个聊天页面
+    //        String username = intent.getStringExtra(KEY_CHAT_OBJ);
+    //        if (mChatObj.equals(username))
+    //            super.onNewIntent(intent);
+    //        else {
+    //            finish();
+    //            startActivity(intent);
+    //        }
+    //
+    //    }
+
 
     private void initData() {
         Intent intent = getIntent();
@@ -165,14 +168,18 @@ public class ChattingActivity extends AppCompatActivity implements View.OnClickL
                 for (EMMessage message : messages) {
                     ConversationModel model = ConversationUtils.getMessageToModel(message);
 
-                    LogUtils.d("##Chatting中收到消息");
-
+                    LogUtils.d("##Chatting中收到消息0.0");
                     mDatas.add(model);
-                    mAdapter.setData(mDatas);
 
-                    scrollToLast();
+                    UIUtils.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            mAdapter.notifyDataSetChanged();
+                            scrollToLast();
+                        }
+                    });
+
                 }
-
             }
 
             @Override
@@ -283,12 +290,14 @@ public class ChattingActivity extends AppCompatActivity implements View.OnClickL
 
         //添加到数据库
         ConversationDao.insert(model);
-        if (RecentConversationDao.isChated(message.getFrom())) {
+        if (RecentConversationDao.isChated(mChatObj)) {
             //如果跟他聊过，更新最新聊天记录
-            RecentConversationDao.update(model, EMClient.getInstance().getCurrentUser());
+            RecentConversationDao.update(model,mChatObj);
+            LogUtils.d("___chatting 聊过");
         } else {
             //如果没跟他聊过，插入一条
             RecentConversationDao.insert(model);
+            LogUtils.d("___chatting 没聊过");
         }
 
         mDatas.add(model);
@@ -338,6 +347,13 @@ public class ChattingActivity extends AppCompatActivity implements View.OnClickL
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        //TODO:先在这里取消小红点，因为暂时没有想到在会话界面显示红点的时候怎么对会话窗口的聊天对象进行区分
+        RedPointManager.getInstance().disShow(mChatObj);
     }
 
 }

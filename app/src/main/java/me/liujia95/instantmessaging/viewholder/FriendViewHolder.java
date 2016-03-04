@@ -30,9 +30,9 @@ public class FriendViewHolder extends RecyclerView.ViewHolder {
     }
 
     public void loadData(FriendInfoBean bean) {
-        //决定红点是否显示
+        //初始化数据，只会add进去第一次的数据，后续不会重复add
         RedPointManager.getInstance().add(bean.name, new RedPointBean(false, mIvRedPoint));
-
+        //决定红点是否显示
         if (RedPointManager.getInstance().get(bean.name).isShow) {
             mIvRedPoint.setVisibility(View.VISIBLE);
         } else {

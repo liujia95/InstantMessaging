@@ -1,7 +1,5 @@
 package me.liujia95.instantmessaging.activity;
 
-import android.app.ActivityManager;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -166,8 +164,6 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
                     ConversationModel model = ConversationUtils.getMessageToModel(message);
 
-                    ActivityManager am = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
-
                     if (!UIUtils.getRunningActivityName().equals(ChattingActivity.class.getName())) {
                         Intent intent = new Intent();
                         intent.putExtra(GCMPushBroadCast.NOTIFICATION_MESSAGE, model.message);
@@ -181,9 +177,11 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                     ConversationDao.insert(model);
                     if (RecentConversationDao.isChated(message.getFrom())) {
                         //如果跟他聊过，更新最新聊天记录
-                        RecentConversationDao.update(model, EMClient.getInstance().getCurrentUser());
+                        LogUtils.d("___home 聊过");
+                        RecentConversationDao.update(model, message.getFrom());
                     } else {
                         //如果没跟他聊过，插入一条
+                        LogUtils.d("___home 没聊过");
                         RecentConversationDao.insert(model);
                     }
 
@@ -219,7 +217,6 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         };
         EMClient.getInstance().chatManager().addMessageListener(msgListener);
     }
-
 
 
     @Override

@@ -29,11 +29,6 @@ public class ConversationAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         mDatas = list;
     }
 
-    public void setData(List<ConversationModel> list) {
-        mDatas =list;
-        notifyDataSetChanged();
-    }
-
     @Override
     public int getItemViewType(int position) {
         ConversationModel model = mDatas.get(position);

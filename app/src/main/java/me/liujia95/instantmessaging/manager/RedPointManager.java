@@ -59,7 +59,7 @@ public class RedPointManager {
 
     public void show(String name) {
         RedPointBean bean = get(name);
-        bean.isShow = true;
+        bean.isShow = true;//在这需要把数据更改
 
         final ImageView iv = bean.ivRedPoint;
         if (iv.getVisibility() == View.GONE || iv.getVisibility() == View.INVISIBLE) {
@@ -74,7 +74,7 @@ public class RedPointManager {
 
     public void disShow(String name) {
         RedPointBean bean = get(name);
-        bean.isShow = false;
+        bean.isShow = false;//在这需要把数据更改
         final ImageView iv = bean.ivRedPoint;
         if (iv.getVisibility() == View.VISIBLE) {
             UIUtils.post(new Runnable() {

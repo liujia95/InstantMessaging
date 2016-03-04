@@ -10,7 +10,9 @@ import java.util.Date;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import me.liujia95.instantmessaging.R;
+import me.liujia95.instantmessaging.bean.RedPointBean;
 import me.liujia95.instantmessaging.db.model.ConversationModel;
+import me.liujia95.instantmessaging.manager.RedPointManager;
 import me.liujia95.instantmessaging.utils.ConversationUtils;
 import me.liujia95.instantmessaging.utils.DateUtils;
 
@@ -37,6 +39,16 @@ public class ConversationViewHolder extends RecyclerView.ViewHolder {
 
     public void loadData(ConversationModel bean) {
         String chatObj = ConversationUtils.getChatObj(bean);
+
+        //初始化数据，只会add进去第一次的数据，后续不会重复add
+        RedPointManager.getInstance().add(chatObj, new RedPointBean(false, mIvRedPoint));
+        //决定红点是否显示
+        if (RedPointManager.getInstance().get(chatObj).isShow) {
+            mIvRedPoint.setVisibility(View.VISIBLE);
+        } else {
+            mIvRedPoint.setVisibility(View.GONE);
+        }
+
         mTvTitle.setText(chatObj);
         mTvDesc.setText(bean.message);
         //将时间转换
