@@ -52,4 +52,5 @@
     </string-array>
 
     <string name="Version_number_is_wrong">Version number is wrong</string>
+    <string name="network_anomaly">世界上最遥远的距离就是没网。检查设置</string>
 </resources>

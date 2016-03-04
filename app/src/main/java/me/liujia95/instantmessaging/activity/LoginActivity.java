@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.hyphenate.EMCallBack;
 import com.hyphenate.chat.EMClient;
@@ -15,6 +16,8 @@ import com.hyphenate.chat.EMClient;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import me.liujia95.instantmessaging.R;
+import me.liujia95.instantmessaging.utils.LogUtils;
+import me.liujia95.instantmessaging.utils.UIUtils;
 
 /**
  * Created by Administrator on 2016/2/25 14:56.
@@ -91,18 +94,31 @@ public class LoginActivity extends Activity implements View.OnClickListener {
                         startActivity(intent);
 
                         finish();
+                        //TODO:销毁Progressbar
                     }
                 });
             }
 
             @Override
             public void onProgress(int progress, String status) {
+                LogUtils.d("-登录：progress:"+progress+" -- status:"+status);
 
+                //TODO:弹出Progressbar
             }
 
             @Override
             public void onError(int code, String message) {
-                Log.d("main", "登陆聊天服务器失败！code:" + code + "--message:" + message);
+                LogUtils.d("登陆聊天服务器失败！code:" + code + "--message:" + message);
+                switch (code) {
+                    case 303:
+                        UIUtils.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(LoginActivity.this, "网络不可用", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                        break;
+                }
             }
         });
     }
@@ -111,8 +127,6 @@ public class LoginActivity extends Activity implements View.OnClickListener {
      * 点击注册
      */
     private void clickRegister() {
-        Intent intent = new Intent(this,ChattingActivity.class);
-        startActivity(intent);
-
+        //TODO:
     }
 }

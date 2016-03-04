@@ -12,4 +12,6 @@
     <color name="color_light_gray">#F2F2F2</color>
 
     <color name="top_bar_normal_bg">#00acff</color>
+
+    <color name="light_yellow">#f4f4ad</color>
 </resources>

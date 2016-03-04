@@ -5,8 +5,12 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.RelativeLayout;
 
+import com.hyphenate.EMConnectionListener;
+import com.hyphenate.EMError;
 import com.hyphenate.chat.EMClient;
+import com.hyphenate.util.NetUtils;
 
 import java.util.List;
 
@@ -20,6 +24,7 @@ import me.liujia95.instantmessaging.base.ParentFragment;
 import me.liujia95.instantmessaging.db.dao.RecentConversationDao;
 import me.liujia95.instantmessaging.db.model.ConversationModel;
 import me.liujia95.instantmessaging.utils.ConversationUtils;
+import me.liujia95.instantmessaging.utils.LogUtils;
 import me.liujia95.instantmessaging.utils.UIUtils;
 
 /**
@@ -28,7 +33,9 @@ import me.liujia95.instantmessaging.utils.UIUtils;
 public class ConversationListFragment extends ParentFragment implements ConversationListAdapter.OnItemClickListener {
 
     @InjectView(R.id.conversation_list_recyclerview)
-    RecyclerView mRecyclerView;
+    RecyclerView   mRecyclerView;
+    @InjectView(R.id.conversation_list_rl_network_anomaly)
+    RelativeLayout mRlNetworkAnomaly; //网络异常
 
     List<ConversationModel> mDatas;
     private ConversationListAdapter mAdapter;
@@ -61,6 +68,48 @@ public class ConversationListFragment extends ParentFragment implements Conversa
                 refreshUI();
             }
         });
+
+        //注册一个监听连接状态的listener
+        EMClient.getInstance().addConnectionListener(new MyConnectionListener());
+    }
+
+    //实现ConnectionListener接口 自动重连
+    private class MyConnectionListener implements EMConnectionListener {
+        @Override
+        public void onConnected() {
+            LogUtils.d("@@已连接到服务器");
+            UIUtils.post(new Runnable() {
+                @Override
+                public void run() {
+                    mRlNetworkAnomaly.setVisibility(View.GONE);
+                }
+            });
+        }
+
+        @Override
+        public void onDisconnected(final int error) {
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    if (error == EMError.USER_REMOVED) {
+                        // 显示帐号已经被移除
+                        LogUtils.d("@@帐号被移除");
+                    } else if (error == EMError.USER_LOGIN_ANOTHER_DEVICE) {
+                        // 显示帐号在其他设备登陆
+                        LogUtils.d("@@帐号在其他设备登陆");
+                    } else {
+                        if (NetUtils.hasNetwork(getActivity())) {
+                            //连接不到聊天服务器
+                            LogUtils.d("@@连接不到聊天服务器");
+                        } else {
+                            //当前网络不可用，请检查网络设置
+                            LogUtils.d("@@当前网络不可用，请检查网络设置");
+                            mRlNetworkAnomaly.setVisibility(View.VISIBLE);
+                        }
+                    }
+                }
+            });
+        }
     }
 
     /**

@@ -1,7 +1,6 @@
 package me.liujia95.instantmessaging.fragment;
 
 import android.content.Intent;
-import android.os.SystemClock;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -34,8 +33,8 @@ import me.liujia95.instantmessaging.view.SlideBar;
  */
 public class FriendsListFragment extends ParentFragment implements FriendListAdapter.OnItemClickListener, SlideBar.OnTouchAssortListener {
 
-    private List<FriendInfoBean> mDatas;
-    private FriendListAdapter    mAdapter;
+    private List<FriendInfoBean> mDatas   = new ArrayList<>();
+    private FriendListAdapter    mAdapter = new FriendListAdapter(mDatas);
 
     @InjectView(R.id.friendlist_recyclerview)
     RecyclerView mRecyclerView;
@@ -51,7 +50,11 @@ public class FriendsListFragment extends ParentFragment implements FriendListAda
 
     @Override
     public void initData() {
-        mDatas = new ArrayList<>();
+
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(UIUtils.getContext()));
+        mRecyclerView.setAdapter(mAdapter);
+
+        mAdapter.setOnItemClickListener(FriendsListFragment.this);
 
         //TODO:测试用
         String[] names = UIUtils.getStringArray(R.array.array_name);
@@ -78,25 +81,22 @@ public class FriendsListFragment extends ParentFragment implements FriendListAda
                     UIUtils.post(new Runnable() {
                         @Override
                         public void run() {
-                            mAdapter.setData(mDatas);
+                            //排序
+                            ListUtil.sortList(mDatas);
+                            refreshUI(mDatas);
                         }
                     });
                 } catch (HyphenateException e) {
                     e.printStackTrace();
+                    LogUtils.d("*** error:" + e);
                 }
             }
         });
 
-        SystemClock.sleep(200);//TODO：测试用
+    }
 
-        //排序
-        ListUtil.sortList(mDatas);
-
-        mAdapter = new FriendListAdapter(mDatas);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(UIUtils.getContext()));
-        mRecyclerView.setAdapter(mAdapter);
-
-
+    public void refreshUI(List<FriendInfoBean> datas) {
+        mAdapter.setData(datas);
     }
 
     @Override
@@ -107,37 +107,36 @@ public class FriendsListFragment extends ParentFragment implements FriendListAda
             @Override
             public void onContactAgreed(String username) {
                 //好友请求被同意
-                LogUtils.d("好友请求被同意 username:" + username);
+                LogUtils.d("##好友请求被同意 username:" + username);
             }
 
             @Override
             public void onContactRefused(String username) {
                 //好友请求被拒绝
-                LogUtils.d("好友请求被拒绝 username:" + username);
+                LogUtils.d("##好友请求被拒绝 username:" + username);
             }
 
             @Override
             public void onContactInvited(String username, String reason) {
                 //收到好友邀请
-                LogUtils.d("收到好友邀请 username:" + username + "--reason:" + reason);
+                LogUtils.d("##收到好友邀请 username:" + username + "--reason:" + reason);
 
             }
 
             @Override
             public void onContactDeleted(String username) {
                 //被删除时回调此方法
-                LogUtils.d("被删除 username:" + username);
+                LogUtils.d("##被删除 username:" + username);
             }
 
 
             @Override
             public void onContactAdded(String username) {
                 //增加了联系人时回调此方法
-                LogUtils.d("增加了联系人 username" + username);
+                LogUtils.d("##增加了联系人 username" + username);
             }
         });
 
-        mAdapter.setOnItemClickListener(this);
         mSlidebar.setOnTouchAssortListener(this);
     }
 

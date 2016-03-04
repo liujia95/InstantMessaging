@@ -18,13 +18,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.hyphenate.EMConnectionListener;
-import com.hyphenate.EMError;
 import com.hyphenate.EMMessageListener;
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMMessage;
 import com.hyphenate.exceptions.HyphenateException;
-import com.hyphenate.util.NetUtils;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -171,7 +168,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
                     ActivityManager am = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
 
-                    if(!UIUtils.getRunningActivityName().equals(ChattingActivity.class.getName())){
+                    if (!UIUtils.getRunningActivityName().equals(ChattingActivity.class.getName())) {
                         Intent intent = new Intent();
                         intent.putExtra(GCMPushBroadCast.NOTIFICATION_MESSAGE, model.message);
                         intent.setAction("com.hyphenate.sdk.push");
@@ -221,40 +218,9 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
             }
         };
         EMClient.getInstance().chatManager().addMessageListener(msgListener);
-        //注册一个监听连接状态的listener
-        EMClient.getInstance().addConnectionListener(new MyConnectionListener());
     }
 
-    //实现ConnectionListener接口
-    private class MyConnectionListener implements EMConnectionListener {
-        @Override
-        public void onConnected() {
-        }
 
-        @Override
-        public void onDisconnected(final int error) {
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    if (error == EMError.USER_REMOVED) {
-                        // 显示帐号已经被移除
-                        LogUtils.d("@@帐号被移除");
-                    } else if (error == EMError.USER_LOGIN_ANOTHER_DEVICE) {
-                        // 显示帐号在其他设备登陆
-                        LogUtils.d("@@帐号在其他设备登陆");
-                    } else {
-                        if (NetUtils.hasNetwork(HomeActivity.this)) {
-                            //连接不到聊天服务器
-                            LogUtils.d("@@连接不到聊天服务器");
-                        } else {
-                            //当前网络不可用，请检查网络设置
-                            LogUtils.d("@@当前网络不可用，请检查网络设置");
-                        }
-                    }
-                }
-            });
-        }
-    }
 
     @Override
     public void onClick(View v) {
