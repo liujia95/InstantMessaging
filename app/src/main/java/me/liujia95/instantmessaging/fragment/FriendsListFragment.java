@@ -21,6 +21,7 @@ import me.liujia95.instantmessaging.activity.ChattingActivity;
 import me.liujia95.instantmessaging.adapter.FriendListAdapter;
 import me.liujia95.instantmessaging.base.ParentFragment;
 import me.liujia95.instantmessaging.bean.FriendInfoBean;
+import me.liujia95.instantmessaging.manager.RedPointManager;
 import me.liujia95.instantmessaging.manager.ThreadPoolManager;
 import me.liujia95.instantmessaging.utils.ListUtil;
 import me.liujia95.instantmessaging.utils.LogUtils;
@@ -78,6 +79,13 @@ public class FriendsListFragment extends ParentFragment implements FriendListAda
                     }
                     LogUtils.d("*** 好友(个)：" + mDatas.size());
 
+                } catch (HyphenateException e) {
+                    e.printStackTrace();
+                    LogUtils.d("*** error:" + e);
+                    //从数据库查找
+
+
+                } finally {
                     UIUtils.post(new Runnable() {
                         @Override
                         public void run() {
@@ -86,9 +94,6 @@ public class FriendsListFragment extends ParentFragment implements FriendListAda
                             refreshUI(mDatas);
                         }
                     });
-                } catch (HyphenateException e) {
-                    e.printStackTrace();
-                    LogUtils.d("*** error:" + e);
                 }
             }
         });
@@ -108,25 +113,28 @@ public class FriendsListFragment extends ParentFragment implements FriendListAda
             public void onContactAgreed(String username) {
                 //好友请求被同意
                 LogUtils.d("##好友请求被同意 username:" + username);
+                RedPointManager.getInstance().show(UIUtils.getString(R.string.apply_and_notification));
             }
 
             @Override
             public void onContactRefused(String username) {
                 //好友请求被拒绝
                 LogUtils.d("##好友请求被拒绝 username:" + username);
+                RedPointManager.getInstance().show(UIUtils.getString(R.string.apply_and_notification));
             }
 
             @Override
             public void onContactInvited(String username, String reason) {
                 //收到好友邀请
                 LogUtils.d("##收到好友邀请 username:" + username + "--reason:" + reason);
-
+                RedPointManager.getInstance().show(UIUtils.getString(R.string.apply_and_notification));
             }
 
             @Override
             public void onContactDeleted(String username) {
                 //被删除时回调此方法
                 LogUtils.d("##被删除 username:" + username);
+                RedPointManager.getInstance().show(UIUtils.getString(R.string.apply_and_notification));
             }
 
 
@@ -134,6 +142,7 @@ public class FriendsListFragment extends ParentFragment implements FriendListAda
             public void onContactAdded(String username) {
                 //增加了联系人时回调此方法
                 LogUtils.d("##增加了联系人 username" + username);
+                RedPointManager.getInstance().show(UIUtils.getString(R.string.apply_and_notification));
             }
         });
 

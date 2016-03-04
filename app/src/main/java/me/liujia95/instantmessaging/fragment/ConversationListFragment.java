@@ -78,12 +78,7 @@ public class ConversationListFragment extends ParentFragment implements Conversa
         @Override
         public void onConnected() {
             LogUtils.d("@@已连接到服务器");
-            UIUtils.post(new Runnable() {
-                @Override
-                public void run() {
-                    mRlNetworkAnomaly.setVisibility(View.GONE);
-                }
-            });
+            disShowNetworkAnomaly();
         }
 
         @Override
@@ -104,12 +99,36 @@ public class ConversationListFragment extends ParentFragment implements Conversa
                         } else {
                             //当前网络不可用，请检查网络设置
                             LogUtils.d("@@当前网络不可用，请检查网络设置");
-                            mRlNetworkAnomaly.setVisibility(View.VISIBLE);
+                            showNetworkAnomaly();
                         }
                     }
                 }
             });
         }
+    }
+
+    public void showNetworkAnomaly() {
+        UIUtils.post(new Runnable() {
+            @Override
+            public void run() {
+                if (mRlNetworkAnomaly.getVisibility() == View.GONE) {
+                    LogUtils.d("@@显示");
+                    mRlNetworkAnomaly.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+    }
+
+    public void disShowNetworkAnomaly() {
+        UIUtils.post(new Runnable() {
+            @Override
+            public void run() {
+                if (mRlNetworkAnomaly.getVisibility() == View.VISIBLE) {
+                    LogUtils.d("@@不显示");
+                    mRlNetworkAnomaly.setVisibility(View.GONE);
+                }
+            }
+        });
     }
 
     /**

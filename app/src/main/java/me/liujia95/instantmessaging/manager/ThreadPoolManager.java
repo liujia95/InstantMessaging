@@ -1,8 +1,5 @@
 package me.liujia95.instantmessaging.manager;
 
-/**
- *
- */
 public class ThreadPoolManager {
 
     private static ThreadPoolProxy mLongPool;                        // 耗时操作的池子
