@@ -6,7 +6,7 @@ import android.widget.ImageView;
 import java.util.HashMap;
 import java.util.Map;
 
-import me.liujia95.instantmessaging.utils.LogUtils;
+import me.liujia95.instantmessaging.bean.RedPointBean;
 import me.liujia95.instantmessaging.utils.UIUtils;
 
 /**
@@ -15,7 +15,7 @@ import me.liujia95.instantmessaging.utils.UIUtils;
  */
 public class RedPointManager {
 
-    private static Map<String, ImageView> mMap;
+    private static Map<String, RedPointBean> mMap;
 
     public static RedPointManager instance;
 
@@ -36,21 +36,32 @@ public class RedPointManager {
     }
 
 
-    public void add(String name, ImageView iv) {
-        mMap.put(name, iv);
+    public void add(String name, RedPointBean bean) {
+        if (!exist(name)) {
+            mMap.put(name, bean);
+        }
+    }
+
+    public boolean exist(String name) {
+        if (get(name) != null) {
+            return true;
+        }
+        return false;
     }
 
     public void remove(String name) {
         mMap.remove(name);
     }
 
-    public ImageView get(String name) {
+    public RedPointBean get(String name) {
         return mMap.get(name);
     }
 
     public void show(String name) {
-        final ImageView iv = get(name);
-        LogUtils.d("$$ name:" + name);
+        RedPointBean bean = get(name);
+        bean.isShow = true;
+
+        final ImageView iv = bean.ivRedPoint;
         if (iv.getVisibility() == View.GONE || iv.getVisibility() == View.INVISIBLE) {
             UIUtils.post(new Runnable() {
                 @Override
@@ -62,7 +73,9 @@ public class RedPointManager {
     }
 
     public void disShow(String name) {
-        final ImageView iv = get(name);
+        RedPointBean bean = get(name);
+        bean.isShow = false;
+        final ImageView iv = bean.ivRedPoint;
         if (iv.getVisibility() == View.VISIBLE) {
             UIUtils.post(new Runnable() {
                 @Override

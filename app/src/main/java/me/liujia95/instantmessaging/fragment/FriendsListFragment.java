@@ -106,7 +106,6 @@ public class FriendsListFragment extends ParentFragment implements FriendListAda
 
     @Override
     public void initListener() {
-
         EMClient.getInstance().contactManager().setContactListener(new EMContactListener() {
 
             @Override

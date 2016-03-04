@@ -28,10 +28,10 @@ public class FriendListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     public FriendListAdapter(List<FriendInfoBean> datas) {
         mDatas = datas;
-        mSystemDatas.add(new FriendInfoBean(R.drawable.em_add_public_group, UIUtils.getString(R.string.apply_and_notification),FriendInfoBean.TYPE_DATA));
-        mSystemDatas.add(new FriendInfoBean(R.drawable.em_groups_icon, UIUtils.getString(R.string.group_chat),FriendInfoBean.TYPE_DATA));
-        mSystemDatas.add(new FriendInfoBean(R.drawable.em_groups_icon, UIUtils.getString(R.string.chat_room),FriendInfoBean.TYPE_DATA));
-        mSystemDatas.add(new FriendInfoBean(R.drawable.em_groups_icon, UIUtils.getString(R.string.huanxin_helper),FriendInfoBean.TYPE_DATA));
+        mSystemDatas.add(new FriendInfoBean(R.drawable.em_add_public_group, UIUtils.getString(R.string.apply_and_notification), FriendInfoBean.TYPE_DATA));
+        mSystemDatas.add(new FriendInfoBean(R.drawable.em_groups_icon, UIUtils.getString(R.string.group_chat), FriendInfoBean.TYPE_DATA));
+        mSystemDatas.add(new FriendInfoBean(R.drawable.em_groups_icon, UIUtils.getString(R.string.chat_room), FriendInfoBean.TYPE_DATA));
+        mSystemDatas.add(new FriendInfoBean(R.drawable.em_groups_icon, UIUtils.getString(R.string.huanxin_helper), FriendInfoBean.TYPE_DATA));
     }
 
     public void setData(List<FriendInfoBean> datas) {

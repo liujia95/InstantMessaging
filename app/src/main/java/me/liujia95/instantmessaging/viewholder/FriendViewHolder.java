@@ -9,6 +9,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import me.liujia95.instantmessaging.R;
 import me.liujia95.instantmessaging.bean.FriendInfoBean;
+import me.liujia95.instantmessaging.bean.RedPointBean;
 import me.liujia95.instantmessaging.manager.RedPointManager;
 
 /**
@@ -29,8 +30,14 @@ public class FriendViewHolder extends RecyclerView.ViewHolder {
     }
 
     public void loadData(FriendInfoBean bean) {
-        //添加到红点管理类中
-        RedPointManager.getInstance().add(bean.name, mIvRedPoint);
+        //决定红点是否显示
+        RedPointManager.getInstance().add(bean.name, new RedPointBean(false, mIvRedPoint));
+
+        if (RedPointManager.getInstance().get(bean.name).isShow) {
+            mIvRedPoint.setVisibility(View.VISIBLE);
+        } else {
+            mIvRedPoint.setVisibility(View.GONE);
+        }
         mIvIcon.setImageResource(bean.avatar);
         mTvName.setText(bean.name);
     }
