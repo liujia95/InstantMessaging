@@ -7,7 +7,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
-import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -64,12 +63,15 @@ public class ChattingActivity extends AppCompatActivity implements View.OnClickL
     FrameLayout  mFlInput;
     @InjectView(R.id.conversation_iv_biaoqing)
     ImageView    mIvBiaoqing;
+    @InjectView(R.id.send_img_iv)
+    ImageView    mIvImg;
 
     private String                  mChatObj;
     private List<ConversationModel> mDatas;
     private ConversationAdapter     mAdapter;
 
-    public static String KEY_CHAT_OBJ = "key_chat_obj"; //聊天对象
+    public static String KEY_CHAT_OBJ              = "key_chat_obj"; //聊天对象
+    public static int    REQUEST_CODE_SWITCH_IMAGE = 100;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -213,7 +215,7 @@ public class ChattingActivity extends AppCompatActivity implements View.OnClickL
         mIvVoice.setOnClickListener(this);
         mTvSend.setOnClickListener(this);
         mIvBiaoqing.setOnClickListener(this);
-
+        mIvImg.setOnClickListener(this);
     }
 
     /**
@@ -240,6 +242,10 @@ public class ChattingActivity extends AppCompatActivity implements View.OnClickL
             clickSendTXTMessage();
         } else if (v == mIvBiaoqing) {
             clickBiaoqing();
+        } else if (v == mIvImg) {
+            Intent intent = new Intent(this, SwitchImgActivity.class);
+            intent.putExtra(KEY_CHAT_OBJ, mChatObj);
+            startActivityForResult(intent, REQUEST_CODE_SWITCH_IMAGE);
         }
     }
 
@@ -273,7 +279,8 @@ public class ChattingActivity extends AppCompatActivity implements View.OnClickL
     private void clickSendTXTMessage() {
         //创建一条文本消息,content为消息文字内容，toChatUsername为对方用户或者群聊的id，后文皆是如此
         String inputStr = mEtInput.getText().toString();
-        if (TextUtils.isEmpty(inputStr)) {
+        if (inputStr.matches("\\s+")) {
+            Toast.makeText(this, "不能发送空白消息", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -287,12 +294,13 @@ public class ChattingActivity extends AppCompatActivity implements View.OnClickL
         model.messageType = EMMessage.Type.TXT;
         model.messageState = MessageState.UNDELIVERED;
         model.message = inputStr;
+        model.date = System.currentTimeMillis();
 
         //添加到数据库
         ConversationDao.insert(model);
         if (RecentConversationDao.isChated(mChatObj)) {
             //如果跟他聊过，更新最新聊天记录
-            RecentConversationDao.update(model,mChatObj);
+            RecentConversationDao.update(model, mChatObj);
             LogUtils.d("___chatting 聊过");
         } else {
             //如果没跟他聊过，插入一条
@@ -309,11 +317,24 @@ public class ChattingActivity extends AppCompatActivity implements View.OnClickL
     }
 
     private void clickBiaoqing() {
-        if (mIvBiaoqing.isEnabled()) {
-            mIvBiaoqing.setEnabled(false);
+        if (mIvBiaoqing.isSelected()) {
+            mIvBiaoqing.setSelected(false);
         } else {
-            mIvBiaoqing.setEnabled(true);
+            mIvBiaoqing.setSelected(true);
         }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        if (requestCode == REQUEST_CODE_SWITCH_IMAGE && resultCode == RESULT_OK) {
+            List<ConversationModel> list = intent.getParcelableArrayListExtra(SwitchImgActivity.KEY_SWITCH_IMAGE);
+
+            Toast.makeText(this, "@@list size:" + list.size(), Toast.LENGTH_SHORT).show();
+
+            mDatas.addAll(list);
+            mAdapter.notifyDataSetChanged();
+        }
+        super.onActivityResult(requestCode, resultCode, intent);
     }
 
     @Override
@@ -325,10 +346,8 @@ public class ChattingActivity extends AppCompatActivity implements View.OnClickL
                 return true;
             }
         }
-
         return super.dispatchKeyEvent(event);
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

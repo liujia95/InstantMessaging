@@ -60,7 +60,7 @@ public class RecentConversationDao {
         values.put(COLUMN_NAME_TO, model.to);
         values.put(COLUMN_NAME_MESSAGE_TYPE_ID, MessageTypeDao.getIdFromType(model.messageType.toString()));
         values.put(COLUMN_NAME_MESSAGE_STATE_ID, MessageStateDao.getIdFromState(model.messageState.toString()));
-        values.put(COLUMN_NAME_MESSAGE, model.message);
+        values.put(COLUMN_NAME_MESSAGE, model.message.trim()); //去前后的空格
         values.put(COLUMN_NAME_DATE, model.date);
 
         long result = db.insert(TABLE_NAME, null, values);
@@ -82,7 +82,7 @@ public class RecentConversationDao {
         values.put(COLUMN_NAME_TO, model.to);
         values.put(COLUMN_NAME_MESSAGE_TYPE_ID, MessageTypeDao.getIdFromType(model.messageType.toString()));
         values.put(COLUMN_NAME_MESSAGE_STATE_ID, MessageStateDao.getIdFromState(model.messageState.toString()));
-        values.put(COLUMN_NAME_MESSAGE, model.message);
+        values.put(COLUMN_NAME_MESSAGE, model.message.trim()); //去前后的空格
         values.put(COLUMN_NAME_DATE, model.date);
 
         int result = db.update(TABLE_NAME, values, "_from=? or _to=?", new String[]{username, username});

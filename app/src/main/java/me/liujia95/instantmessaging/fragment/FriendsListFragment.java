@@ -154,7 +154,9 @@ public class FriendsListFragment extends ParentFragment implements FriendListAda
             return;
         }
         if (bean.name.equals(UIUtils.getString(R.string.apply_and_notification))) {
-            Toast.makeText(getActivity(), "申请与通知", Toast.LENGTH_SHORT).show();
+            //消除小红点
+            RedPointManager.getInstance().disShow(UIUtils.getString(R.string.apply_and_notification));
+
         } else if (bean.name.equals(UIUtils.getString(R.string.group_chat))) {
             Toast.makeText(getActivity(), "群聊", Toast.LENGTH_SHORT).show();
 

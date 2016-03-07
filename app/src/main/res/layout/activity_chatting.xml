@@ -67,8 +67,8 @@
                     android:layout_gravity="right"
                     android:layout_marginRight="5dp"
                     android:clickable="true"
-                    android:enabled="false"
-                    android:padding="3dp"
+                    android:focusable="true"
+                    android:padding="7dp"
                     android:src="@drawable/conversation_biaoqing_selector"/>
 
             </FrameLayout>

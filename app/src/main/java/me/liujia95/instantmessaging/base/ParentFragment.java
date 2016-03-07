@@ -21,10 +21,7 @@ public abstract class ParentFragment extends Fragment {
     }
 
     public View getRootView() {
-        if (mRootView != null) {
-            return mRootView;
-        }
-        return null;
+        return mRootView;
     }
 
     @Override

@@ -12,44 +12,91 @@
         android:layout_weight="1">
     </android.support.v4.view.ViewPager>
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/tab_bg_line"/>
+
     <LinearLayout
-        android:background="@drawable/gray_top_line"
         android:layout_width="match_parent"
         android:layout_height="60dp"
+        android:background="@color/tab_bg"
         android:orientation="horizontal">
 
-        <me.liujia95.instantmessaging.view.ChangeColorIconWithText
-            android:id="@+id/home_indicator_one"
+        <LinearLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:padding="5dp"
-            app:color="#ff45c01a"
-            app:icon="@mipmap/ic_menu_start_conversation"
-            app:text="@string/tab_conversation"
-            app:text_size="12sp"/>
+            android:gravity="center"
+            android:orientation="vertical">
 
-        <me.liujia95.instantmessaging.view.ChangeColorIconWithText
-            android:id="@+id/home_indicator_two"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:padding="5dp"
-            app:color="#ff45c01a"
-            app:icon="@mipmap/ic_menu_friendslist"
-            app:text="@string/tab_contact"
-            app:text_size="12sp"/>
+            <com.david.gradientuilibrary.GradientIconView
+                android:id="@+id/id_iconfont_chat"
+                android:layout_width="40dp"
+                android:layout_height="35dp"
+                app:bottom_icon="@mipmap/chats"
+                app:top_icon="@mipmap/chats_green"/>
 
-        <me.liujia95.instantmessaging.view.ChangeColorIconWithText
-            android:id="@+id/home_indicator_four"
+            <com.david.gradientuilibrary.GradientTextView
+                android:id="@+id/id_chats_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:bottom_text_color="@color/tab_text_gray"
+                app:text="@string/tab_conversation"
+                app:text_size="12sp"
+                app:top_text_color="@color/tab_bg_green"/>
+
+        </LinearLayout>
+
+        <LinearLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:padding="5dp"
-            app:color="#ff45c01a"
-            app:icon="@mipmap/ic_menu_setting"
-            app:text="@string/tab_setting"
-            app:text_size="12sp"/>
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <com.david.gradientuilibrary.GradientIconView
+                android:id="@+id/id_iconfont_friend"
+                android:layout_width="40dp"
+                android:layout_height="35dp"
+                app:bottom_icon="@mipmap/contacts"
+                app:top_icon="@mipmap/contacts_green"/>
+
+            <com.david.gradientuilibrary.GradientTextView
+                android:id="@+id/id_contacts_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:bottom_text_color="@color/tab_text_gray"
+                app:text="@string/tab_contact"
+                app:text_size="12sp"
+                app:top_text_color="@color/tab_bg_green"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <com.david.gradientuilibrary.GradientIconView
+                android:id="@+id/id_iconfont_me"
+                android:layout_width="40dp"
+                android:layout_height="35dp"
+                app:bottom_icon="@mipmap/about_me"
+                app:top_icon="@mipmap/about_me_green"/>
+
+            <com.david.gradientuilibrary.GradientTextView
+                android:id="@+id/id_about_me_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:bottom_text_color="@color/tab_text_gray"
+                app:text="@string/tab_setting"
+                app:text_size="12sp"
+                app:top_text_color="@color/tab_bg_green"/>
+        </LinearLayout>
+
     </LinearLayout>
 
 </LinearLayout>

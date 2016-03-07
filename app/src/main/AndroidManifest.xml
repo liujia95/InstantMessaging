@@ -46,6 +46,8 @@
             android:name=".activity.ChattingActivity"
             android:windowSoftInputMode="adjustResize"/>
 
+        <activity android:name=".activity.SwitchImgActivity"/>
+
         <!-- gcm start -->
         <receiver
             android:name="com.hyphenate.chat.EMGCMBroadcastReceiver"

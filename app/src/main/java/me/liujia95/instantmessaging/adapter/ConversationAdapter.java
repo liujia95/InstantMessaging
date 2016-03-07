@@ -21,8 +21,10 @@ import me.liujia95.instantmessaging.viewholder.ConversationYourTXTViewHolder;
 public class ConversationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private List<ConversationModel> mDatas;
 
-    private static final int TYPE_MY_TXT   = 0;
-    private static final int TYPE_YOUR_TXT = 1;
+    private static final int TYPE_MY_TXT     = 0;
+    private static final int TYPE_YOUR_TXT   = 1;
+    private static final int TYPE_MY_IMAGE   = 2;
+    private static final int TYPE_YOUR_IMAGE = 3;
 
 
     public ConversationAdapter(List<ConversationModel> list) {
@@ -34,9 +36,16 @@ public class ConversationAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         ConversationModel model = mDatas.get(position);
         if (model.from.equals(EMClient.getInstance().getCurrentUser())) {
             //谁发的消息，就代表谁说的话
+            if (model.messageType == model.messageType) {
+                return TYPE_MY_IMAGE;
+            }
             return TYPE_MY_TXT;
+        } else {
+            if (model.messageType == model.messageType) {
+                return TYPE_YOUR_IMAGE;
+            }
+            return TYPE_YOUR_TXT;
         }
-        return TYPE_YOUR_TXT;
     }
 
     @Override

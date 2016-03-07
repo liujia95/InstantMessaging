@@ -5,6 +5,8 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.hyphenate.chat.EMMessage;
+
 import java.util.Date;
 
 import butterknife.ButterKnife;
@@ -49,12 +51,14 @@ public class ConversationViewHolder extends RecyclerView.ViewHolder {
             mIvRedPoint.setVisibility(View.GONE);
         }
 
-        mTvTitle.setText(chatObj);
-        mTvDesc.setText(bean.message);
         //将时间转换
         Date date = new Date(Long.valueOf(bean.date));
-        String dateFormat = DateUtils.getDateFormat(date.getTime());
-        mTvTime.setText(dateFormat);
 
+        if (bean.messageType == EMMessage.Type.TXT) {
+            mTvTitle.setText(chatObj);
+            mTvDesc.setText(bean.message);
+            String dateFormat = DateUtils.getDateFormat(date.getTime());
+            mTvTime.setText(dateFormat);
+        }
     }
 }

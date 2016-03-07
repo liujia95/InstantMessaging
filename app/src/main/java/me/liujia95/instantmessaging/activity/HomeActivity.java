@@ -16,6 +16,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.david.gradientuilibrary.GradientIconView;
+import com.david.gradientuilibrary.GradientTextView;
 import com.hyphenate.EMMessageListener;
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMMessage;
@@ -45,13 +47,22 @@ import me.liujia95.instantmessaging.view.ChangeColorIconWithText;
 public class HomeActivity extends AppCompatActivity implements View.OnClickListener {
 
     @InjectView(R.id.home_viewpager)
-    ViewPager               mViewPager;
-    @InjectView(R.id.home_indicator_one)
-    ChangeColorIconWithText mIndicatorOne;
-    @InjectView(R.id.home_indicator_two)
-    ChangeColorIconWithText mIndicatorTwo;
-    @InjectView(R.id.home_indicator_four)
-    ChangeColorIconWithText mIndicatorFour;
+    ViewPager mViewPager;
+
+    private List<GradientIconView> mTabIconIndicator = new ArrayList<>();
+    private List<GradientTextView> mTabTextIndicator = new ArrayList<>();
+    @InjectView(R.id.id_iconfont_chat)
+    GradientIconView mChatsIconView;
+    @InjectView(R.id.id_chats_tv)
+    GradientTextView mTvChats;
+    @InjectView(R.id.id_iconfont_friend)
+    GradientIconView mContactsIconView;
+    @InjectView(R.id.id_contacts_tv)
+    GradientTextView mTvContacts;
+    @InjectView(R.id.id_iconfont_me)
+    GradientIconView mAboutMeIconView;
+    @InjectView(R.id.id_about_me_tv)
+    GradientTextView mTvAboutMe;
 
     private List<ParentFragment> mTabs = new ArrayList<>();
 
@@ -75,9 +86,27 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
      */
     private void initView() {
         ButterKnife.inject(this);
-        mTabIndicators.add(mIndicatorOne);
-        mTabIndicators.add(mIndicatorTwo);
-        mTabIndicators.add(mIndicatorFour);
+
+        mChatsIconView.setOnClickListener(this);
+        mTabIconIndicator.add(mChatsIconView);
+        mChatsIconView.setIconAlpha(1.0f);
+
+        mContactsIconView.setOnClickListener(this);
+        mTabIconIndicator.add(mContactsIconView);
+
+        mAboutMeIconView.setOnClickListener(this);
+        mTabIconIndicator.add(mAboutMeIconView);
+
+        mTvChats.setOnClickListener(this);
+        mTabTextIndicator.add(mTvChats);
+        mTvChats.setTextViewAlpha(1.0f);
+
+        mTvContacts.setOnClickListener(this);
+        mTabTextIndicator.add(mTvContacts);
+
+        mTvAboutMe.setOnClickListener(this);
+        mTabTextIndicator.add(mTvAboutMe);
+
     }
 
     /**
@@ -108,27 +137,50 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     /**
+     * 重置其他的Tab
+     */
+    private void resetOtherTabs() {
+        resetOtherTabIcons();
+        resetOtherTabText();
+    }
+
+    /**
+     * 重置其他的Tab icon
+     */
+    private void resetOtherTabIcons() {
+        for (int i = 0; i < mTabIconIndicator.size(); i++) {
+            mTabIconIndicator.get(i).setIconAlpha(0);
+        }
+    }
+
+    /**
+     * 重置其他的Tab text
+     */
+    private void resetOtherTabText() {
+        for (int i = 0; i < mTabTextIndicator.size(); i++) {
+            mTabTextIndicator.get(i).setTextViewAlpha(0);
+        }
+    }
+
+    /**
      * 初始化事件
      */
     private void initListener() {
-        mIndicatorOne.setOnClickListener(this);
-        mIndicatorTwo.setOnClickListener(this);
-        mIndicatorFour.setOnClickListener(this);
-
-        //默认第一个是不透明
-        mIndicatorOne.setIconAlpha(1.0f);
 
         mViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-                //Log.e("TAG", "position = " + position + " , positionOffset = " + positionOffset);
-
                 if (positionOffset > 0) {
-                    ChangeColorIconWithText left = mTabIndicators.get(position);
-                    ChangeColorIconWithText right = mTabIndicators.get(position + 1);
+                    GradientIconView iconLeft = mTabIconIndicator.get(position);
+                    GradientIconView iconRight = mTabIconIndicator.get(position + 1);
 
-                    left.setIconAlpha(1 - positionOffset);
-                    right.setIconAlpha(positionOffset);
+                    GradientTextView textLeft = mTabTextIndicator.get(position);
+                    GradientTextView textRight = mTabTextIndicator.get(position + 1);
+
+                    iconLeft.setIconAlpha(1 - positionOffset);
+                    textLeft.setTextViewAlpha(1 - positionOffset);
+                    iconRight.setIconAlpha(positionOffset);
+                    textRight.setTextViewAlpha(positionOffset);
                 }
             }
 
@@ -160,7 +212,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                     long msgMillis = message.getMsgTime();
                     LogUtils.d("===getMsgTime:" + msgMillis);
                     Date date = new Date(msgMillis);
-                    LogUtils.d("===11时间：" + date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds());
+                    LogUtils.d("===时间：" + date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds());
 
                     ConversationModel model = ConversationUtils.getMessageToModel(message);
 
@@ -177,11 +229,9 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                     ConversationDao.insert(model);
                     if (RecentConversationDao.isChated(message.getFrom())) {
                         //如果跟他聊过，更新最新聊天记录
-                        LogUtils.d("___home 聊过");
                         RecentConversationDao.update(model, message.getFrom());
                     } else {
                         //如果没跟他聊过，插入一条
-                        LogUtils.d("___home 没聊过");
                         RecentConversationDao.insert(model);
                     }
 
@@ -193,26 +243,26 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void onCmdMessageReceived(List<EMMessage> messages) {
                 //收到透传消息
-                LogUtils.d("收到透传消息：----");
+                LogUtils.d("@@收到透传消息：----");
             }
 
             @Override
             public void onMessageReadAckReceived(List<EMMessage> messages) {
                 //收到已读回执
-                LogUtils.d("已读：----");
+                LogUtils.d("@@已读：----");
 
             }
 
             @Override
             public void onMessageDeliveryAckReceived(List<EMMessage> message) {
                 //收到已送达回执
-                LogUtils.d("已送达：----");
+                LogUtils.d("@@已送达：----");
             }
 
             @Override
             public void onMessageChanged(EMMessage message, Object change) {
                 //消息状态变动
-                LogUtils.d("消息状态变动: message:" + message + "--change:" + change);
+                LogUtils.d("@@消息状态变动: message:" + message + "--change:" + change);
             }
         };
         EMClient.getInstance().chatManager().addMessageListener(msgListener);
@@ -223,27 +273,24 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v) {
         resetOtherTabs();
         switch (v.getId()) {
-            case R.id.home_indicator_one:
-                mTabIndicators.get(0).setIconAlpha(1.0f);
+            case R.id.id_iconfont_chat:
+            case R.id.id_chats_tv:
+                mTabIconIndicator.get(0).setIconAlpha(1.0f);
+                mTabTextIndicator.get(0).setTextViewAlpha(1.0f);
                 mViewPager.setCurrentItem(0, false);
                 break;
-            case R.id.home_indicator_two:
-                mTabIndicators.get(1).setIconAlpha(1.0f);
+            case R.id.id_iconfont_friend:
+            case R.id.id_contacts_tv:
+                mTabIconIndicator.get(1).setIconAlpha(1.0f);
+                mTabTextIndicator.get(1).setTextViewAlpha(1.0f);
                 mViewPager.setCurrentItem(1, false);
                 break;
-            case R.id.home_indicator_four:
-                mTabIndicators.get(2).setIconAlpha(1.0f);
+            case R.id.id_iconfont_me:
+            case R.id.id_about_me_tv:
+                mTabIconIndicator.get(2).setIconAlpha(1.0f);
+                mTabTextIndicator.get(2).setTextViewAlpha(1.0f);
                 mViewPager.setCurrentItem(2, false);
                 break;
-        }
-    }
-
-    /**
-     * 重置其他的TabIndicator的颜色
-     */
-    private void resetOtherTabs() {
-        for (int i = 0; i < mTabIndicators.size(); i++) {
-            mTabIndicators.get(i).setIconAlpha(0);
         }
     }
 
@@ -335,7 +382,6 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
             }
         });
     }
-
 
     private OnMessageListener mMessageListener;
 

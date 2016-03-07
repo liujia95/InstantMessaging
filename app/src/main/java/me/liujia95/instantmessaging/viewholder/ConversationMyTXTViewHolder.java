@@ -11,6 +11,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import me.liujia95.instantmessaging.R;
 import me.liujia95.instantmessaging.db.model.ConversationModel;
+import me.liujia95.instantmessaging.utils.LogUtils;
 
 /**
  * Created by Administrator on 2016/3/1 15:28.
@@ -30,8 +31,8 @@ public class ConversationMyTXTViewHolder extends RecyclerView.ViewHolder {
 
     public void loadData(ConversationModel model) {
         if (model.messageType == EMMessage.Type.TXT) {
+            LogUtils.d("txt "+model.messageType);
             mTvMessage.setText(model.message);
         }
     }
-
 }

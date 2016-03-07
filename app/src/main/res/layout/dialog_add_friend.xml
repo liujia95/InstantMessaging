@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
+              android:background="@android:color/white"
               android:orientation="vertical"
               android:padding="4dp">
 
@@ -62,16 +63,18 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
+            android:background="?android:attr/selectableItemBackground"
             android:text="添加"
-            android:textSize="20sp"/>
+            android:textSize="16sp"/>
 
         <Button
             android:id="@+id/addfriend_btn_cancel"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
+            android:background="?android:attr/selectableItemBackground"
             android:text="取消"
-            android:textSize="20sp"/>
+            android:textSize="16sp"/>
     </LinearLayout>
 
 </LinearLayout>

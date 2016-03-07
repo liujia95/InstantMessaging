@@ -5,8 +5,10 @@ import android.widget.ImageView;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import me.liujia95.instantmessaging.bean.RedPointBean;
+import me.liujia95.instantmessaging.utils.LogUtils;
 import me.liujia95.instantmessaging.utils.UIUtils;
 
 /**
@@ -58,14 +60,23 @@ public class RedPointManager {
     }
 
     public void show(String name) {
+        LogUtils.d("@@ show name:" + name);
         RedPointBean bean = get(name);
         bean.isShow = true;//在这需要把数据更改
 
         final ImageView iv = bean.ivRedPoint;
-        if (iv.getVisibility() == View.GONE || iv.getVisibility() == View.INVISIBLE) {
+        if (bean.isShow) {
             UIUtils.post(new Runnable() {
                 @Override
                 public void run() {
+                    LogUtils.d("@@ show iv:" + iv);
+                    Set<Map.Entry<String, RedPointBean>> entries = mMap.entrySet();
+                    LogUtils.d("@@------------------------");
+                    for (Map.Entry<String, RedPointBean> entry : entries) {
+                        LogUtils.d("@@ name-->" + entry.getKey() + " iv-->" + entry.getValue().ivRedPoint.toString());
+                    }
+                    LogUtils.d("@@------------------------");
+
                     iv.setVisibility(View.VISIBLE);
                 }
             });
@@ -74,9 +85,12 @@ public class RedPointManager {
 
     public void disShow(String name) {
         RedPointBean bean = get(name);
+        if (bean == null) {
+            return;
+        }
         bean.isShow = false;//在这需要把数据更改
         final ImageView iv = bean.ivRedPoint;
-        if (iv.getVisibility() == View.VISIBLE) {
+        if (!bean.isShow) {
             UIUtils.post(new Runnable() {
                 @Override
                 public void run() {
