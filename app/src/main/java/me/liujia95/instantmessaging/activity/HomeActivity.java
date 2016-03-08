@@ -1,6 +1,5 @@
 package me.liujia95.instantmessaging.activity;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -25,23 +24,18 @@ import com.hyphenate.exceptions.HyphenateException;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import me.liujia95.instantmessaging.R;
 import me.liujia95.instantmessaging.base.ParentFragment;
-import me.liujia95.instantmessaging.db.dao.ConversationDao;
-import me.liujia95.instantmessaging.db.dao.RecentConversationDao;
 import me.liujia95.instantmessaging.db.model.ConversationModel;
 import me.liujia95.instantmessaging.fragment.ConversationListFragment;
 import me.liujia95.instantmessaging.fragment.FriendsListFragment;
 import me.liujia95.instantmessaging.fragment.SettingFragment;
-import me.liujia95.instantmessaging.receiver.GCMPushBroadCast;
 import me.liujia95.instantmessaging.utils.ConversationUtils;
 import me.liujia95.instantmessaging.utils.LogUtils;
-import me.liujia95.instantmessaging.utils.UIUtils;
 import me.liujia95.instantmessaging.view.ChangeColorIconWithText;
 
 public class HomeActivity extends AppCompatActivity implements View.OnClickListener {
@@ -202,42 +196,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
             public void onMessageReceived(List<EMMessage> messages) {
                 //收到消息
                 LogUtils.d("===收到消息：" + messages.size() + "个");
-                for (EMMessage message : messages) {
-                    LogUtils.d("===message:" + message.toString());
-                    LogUtils.d("===getBody:[" + message.getBody().toString() + "]");
-                    LogUtils.d("===getMsgId:" + message.getMsgId());
-                    LogUtils.d("===getUserName:" + message.getUserName());
-                    LogUtils.d("===getFrom:" + message.getFrom());
-                    LogUtils.d("===getTo:" + message.getTo());
-                    long msgMillis = message.getMsgTime();
-                    LogUtils.d("===getMsgTime:" + msgMillis);
-                    Date date = new Date(msgMillis);
-                    LogUtils.d("===时间：" + date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds());
-
-                    ConversationModel model = ConversationUtils.getMessageToModel(message);
-
-                    if (!UIUtils.getRunningActivityName().equals(ChattingActivity.class.getName())) {
-                        Intent intent = new Intent();
-                        intent.putExtra(GCMPushBroadCast.NOTIFICATION_MESSAGE, model.message);
-                        intent.setAction("com.hyphenate.sdk.push");
-                        intent.addCategory("com.hyphenate.chatuidemo");
-                        sendBroadcast(intent);
-                        LogUtils.d("@@发了一条广播");
-                    }
-
-                    //添加到会话的数据库
-                    ConversationDao.insert(model);
-                    if (RecentConversationDao.isChated(message.getFrom())) {
-                        //如果跟他聊过，更新最新聊天记录
-                        RecentConversationDao.update(model, message.getFrom());
-                    } else {
-                        //如果没跟他聊过，插入一条
-                        RecentConversationDao.insert(model);
-                    }
-
-                    //设置监听
-                    mMessageListener.onHasNewMessage(model);
-                }
+                ConversationUtils.receiveImage(messages, mMessageListener);
             }
 
             @Override

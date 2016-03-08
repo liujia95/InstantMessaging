@@ -53,7 +53,6 @@ public class ListImageDirPopupWindow extends BasePopupWindowForListView<ImageFlo
             @Override
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
-
                 if (mImageDirSelected != null) {
                     mImageDirSelected.selected(mDatas.get(position));
                 }

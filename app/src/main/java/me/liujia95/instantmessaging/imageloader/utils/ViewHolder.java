@@ -9,6 +9,10 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.download.ImageDownloader;
+
 
 public class ViewHolder {
     private final SparseArray<View> mViews;
@@ -114,7 +118,17 @@ public class ViewHolder {
      * @return
      */
     public ViewHolder setImageByUrl(int viewId, String url) {
-        ImageLoader.getInstance(3, ImageLoader.Type.LIFO).loadImage(url, (ImageView) getView(viewId));
+        //显示图片的配置
+        DisplayImageOptions options = new DisplayImageOptions.Builder()
+                .cacheInMemory(true)
+                .cacheOnDisk(true)
+                .bitmapConfig(Bitmap.Config.RGB_565)
+                .build();
+
+        String imageUrl = ImageDownloader.Scheme.FILE.wrap(url);
+        ImageLoader.getInstance().displayImage(imageUrl, (ImageView) getView(viewId), options);
+
+
         return this;
     }
 

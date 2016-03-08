@@ -2,7 +2,6 @@ package me.liujia95.instantmessaging.imageloader;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
@@ -42,8 +41,6 @@ public class MyAdapter extends CommonAdapter<String> {
                 R.drawable.picture_unselected);
         //设置图片
         helper.setImageByUrl(R.id.id_item_image, mDirPath + "/" + item);
-
-        Log.d("MyAdapter", "item:" + item);
 
         final ImageView mImageView = helper.getView(R.id.id_item_image);
         final ImageView mSelect = helper.getView(R.id.id_item_select);

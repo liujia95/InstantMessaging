@@ -81,7 +81,7 @@ public class ConversationDao {
      */
     public static ArrayList<ConversationModel> selectLastDatas(String chatObj, String username, int howmany) {
         SQLiteDatabase db = mHelper.getReadableDatabase();
-        String sql = "SELECT * FROM conversation WHERE _from =? AND _to=? OR _from=? AND _to=? ORDER BY _id DESC LIMIT 0,?";
+        String sql = "SELECT _id, _from, _to , _message_type_id ,_message_state_id ,_message, _date FROM conversation WHERE _from =? AND _to=? OR _from=? AND _to=? ORDER BY _id DESC LIMIT 0,?";
         Cursor cursor = db.rawQuery(sql, new String[]{chatObj, username, username, chatObj, howmany + ""});
         ArrayList<ConversationModel> list = new ArrayList<>();
         while (cursor.moveToNext()) {

@@ -1,5 +1,6 @@
 package me.liujia95.instantmessaging.viewholder;
 
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.GestureDetector;
@@ -8,12 +9,14 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.hyphenate.chat.EMMessage;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import me.liujia95.instantmessaging.R;
 import me.liujia95.instantmessaging.db.model.ConversationModel;
-import me.liujia95.instantmessaging.imageloader.utils.ImageLoader;
 import me.liujia95.instantmessaging.utils.LogUtils;
 import me.liujia95.instantmessaging.utils.UIUtils;
 import me.liujia95.instantmessaging.view.BubbleImageView;
@@ -58,7 +61,20 @@ public class ConversationYourIMAGEViewHolder extends RecyclerView.ViewHolder imp
     public void loadData(ConversationModel model) {
         if (model.messageType == EMMessage.Type.IMAGE) {
             LogUtils.d("@@model:" + model.message);
-            ImageLoader.getInstance().loadImage(model.message, mIvImg);
+            //显示图片的配置
+            DisplayImageOptions options = new DisplayImageOptions.Builder()
+                    .cacheInMemory(true)
+                    .cacheOnDisk(true)
+                    .bitmapConfig(Bitmap.Config.RGB_565)
+                    .build();
+
+            ImageLoader.getInstance().loadImage(model.message, options,new SimpleImageLoadingListener() {
+                @Override
+                public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                    super.onLoadingComplete(imageUri, view, loadedImage);
+                    mIvImg.setImageBitmap(loadedImage);
+                }
+            });
         }
     }
 

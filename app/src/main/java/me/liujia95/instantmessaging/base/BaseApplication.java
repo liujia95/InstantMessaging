@@ -6,6 +6,8 @@ import android.os.Handler;
 
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
 /**
  * Created by Administrator on 2016/2/25 14:37.
@@ -35,6 +37,13 @@ public class BaseApplication extends Application {
         mHandler = new Handler();
         mContext = this;
         mMainThread = Thread.currentThread();
+
+        //创建默认的ImageLoader配置参数
+        ImageLoaderConfiguration configuration = ImageLoaderConfiguration
+                .createDefault(this);
+
+        //Initialize ImageLoader with configuration.
+        ImageLoader.getInstance().init(configuration);
 
         //初始化环信的一些配置信息
         EMOptions options = initChatOptions();

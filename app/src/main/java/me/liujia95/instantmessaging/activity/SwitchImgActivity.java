@@ -265,7 +265,6 @@ public class SwitchImgActivity extends AppCompatActivity implements ListImageDir
         mChooseDir = (TextView) findViewById(R.id.id_choose_dir);
         mImageCount = (TextView) findViewById(R.id.id_total_count);
         mBottomLy = (RelativeLayout) findViewById(R.id.id_bottom_ly);
-
     }
 
     private void initEvent() {
@@ -336,7 +335,7 @@ public class SwitchImgActivity extends AppCompatActivity implements ListImageDir
                 //发送图片，返回存放所发图片信息集合，需传到会话界面的datas中
                 ArrayList<ConversationModel> list = ConversationUtils.sendImage(selectedImage, chatObj);
 
-                LogUtils.d("@@ 0.0 list:"+list.size());
+                LogUtils.d("@@ 0.0 list:" + list.size());
 
                 Intent data = new Intent();
                 data.putParcelableArrayListExtra(KEY_SWITCH_IMAGE, list);
@@ -348,5 +347,11 @@ public class SwitchImgActivity extends AppCompatActivity implements ListImageDir
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        MyAdapter.mSelectedImage.clear();
     }
 }

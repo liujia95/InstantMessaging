@@ -33,6 +33,10 @@ public class ConversationAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         mDatas = list;
     }
 
+    public void setDatas(List<ConversationModel> list){
+        mDatas = list;
+    }
+
     @Override
     public int getItemViewType(int position) {
         ConversationModel model = mDatas.get(position);

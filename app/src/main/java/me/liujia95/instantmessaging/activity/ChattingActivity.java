@@ -331,14 +331,14 @@ public class ChattingActivity extends AppCompatActivity implements View.OnClickL
             List<ConversationModel> list = intent.getParcelableArrayListExtra(SwitchImgActivity.KEY_SWITCH_IMAGE);
 
             Toast.makeText(this, "@@list size:" + list.size(), Toast.LENGTH_SHORT).show();
-            for (ConversationModel model: list) {
-                LogUtils.d("@@@ model type:"+model.messageType);
-                LogUtils.d("@@@ model message:"+model.message);
+            for (ConversationModel model : list) {
+                LogUtils.d("@@@ model type:" + model.messageType);
+                LogUtils.d("@@@ model message:" + model.message);
             }
 
-            ArrayList<ConversationModel> datas = ConversationDao.selectLastDatas(mChatObj, EMClient.getInstance().getCurrentUser(), list.size());
-            mDatas.addAll(datas);
-
+            //TODO： 这有BUG待解决！！
+            ArrayList<ConversationModel> datas = ConversationDao.selectAllByChatObj(mChatObj, EMClient.getInstance().getCurrentUser());
+            mAdapter.setDatas(datas);
             LogUtils.d("@@ datas last:" + mDatas.get(mDatas.size() - 1).messageType);
 
             mAdapter.notifyDataSetChanged();
