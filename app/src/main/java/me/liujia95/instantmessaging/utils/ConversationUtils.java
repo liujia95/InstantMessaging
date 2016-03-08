@@ -78,12 +78,8 @@ public class ConversationUtils {
             model.to = chatObj;
             model.messageType = EMMessage.Type.IMAGE;
             model.messageState = MessageState.UNDELIVERED;
-            model.message = imagePath;
-            model.date = System.currentTimeMillis();
-            //把图片文件地址保存到聊天记录数据库中
-            ConversationDao.insert(model);
-
             model.message = "[图片]"; //会话列表中的显示
+            model.date = System.currentTimeMillis();
             if (RecentConversationDao.isChated(chatObj)) {
                 //如果跟他聊过，更新最新聊天记录
                 RecentConversationDao.update(model, chatObj);
@@ -92,6 +88,9 @@ public class ConversationUtils {
                 RecentConversationDao.insert(model);
             }
 
+            model.message = imagePath;
+            //把图片文件地址保存到聊天记录数据库中
+            ConversationDao.insert(model);
             list.add(model);
         }
         return list;

@@ -9,4 +9,20 @@
         <attr name="text"/>
         <attr name="text_size"/>
     </declare-styleable>
+
+    <declare-styleable name="RatioLayout">
+        <!--宽高比的值-->
+        <attr name="ratio" format="float"/>
+        <attr name="relative">
+            <enum name="width" value="0"/>
+            <enum name="height" value="1"/>
+        </attr>
+    </declare-styleable>
+
+    <declare-styleable name="CircleProgressButton">
+        <!-- 进度的宽度 -->
+        <attr name="strokeWidth" format="float"/>
+        <!-- 进度的颜色 -->
+        <attr name="strokeColor" format="color"/>
+    </declare-styleable>
 </resources>

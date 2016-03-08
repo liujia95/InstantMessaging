@@ -7,7 +7,6 @@ import android.database.sqlite.SQLiteDatabase;
 import com.hyphenate.chat.EMMessage;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import me.liujia95.instantmessaging.db.DatabaseHelper;
 import me.liujia95.instantmessaging.db.model.ConversationModel;
@@ -50,11 +49,41 @@ public class ConversationDao {
      *
      * @return
      */
-    public static List<ConversationModel> selectAllByChatObj(String chatObj, String username) {
+    public static ArrayList<ConversationModel> selectAllByChatObj(String chatObj, String username) {
         SQLiteDatabase db = mHelper.getReadableDatabase();
         String sql = "SELECT * FROM(SELECT conversation._id, _from, _to , _type ,_state ,_message, _date FROM conversation, message_type,message_state where _message_type_id = message_type._id and _message_state_id = message_state._id ) WHERE _from =? and _to=? or _from=? and _to=?";
         Cursor cursor = db.rawQuery(sql, new String[]{chatObj, username, username, chatObj});
-        List<ConversationModel> list = new ArrayList<>();
+        ArrayList<ConversationModel> list = new ArrayList<>();
+        while (cursor.moveToNext()) {
+            ConversationModel model = new ConversationModel();
+            model.id = cursor.getString(0);
+            model.from = cursor.getString(1);
+            model.to = cursor.getString(2);
+            model.messageType = getMessageType(cursor.getString(3));
+            model.messageState = getMessageState(cursor.getString(4));
+            model.message = cursor.getString(5);
+            model.date = Long.valueOf(cursor.getString(6));
+
+            list.add(model);
+        }
+        cursor.close();
+        db.close();
+
+        return list;
+    }
+
+    /**
+     * 查询最后几条数据
+     * @param chatObj 聊天对象
+     * @param username 本用户
+     * @param howmany 最后几条？
+     * @return
+     */
+    public static ArrayList<ConversationModel> selectLastDatas(String chatObj, String username, int howmany) {
+        SQLiteDatabase db = mHelper.getReadableDatabase();
+        String sql = "SELECT * FROM conversation WHERE _from =? AND _to=? OR _from=? AND _to=? ORDER BY _id DESC LIMIT 0,?";
+        Cursor cursor = db.rawQuery(sql, new String[]{chatObj, username, username, chatObj, howmany + ""});
+        ArrayList<ConversationModel> list = new ArrayList<>();
         while (cursor.moveToNext()) {
             ConversationModel model = new ConversationModel();
             model.id = cursor.getString(0);

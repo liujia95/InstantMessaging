@@ -29,6 +29,7 @@
             android:maxWidth="240dp"
             android:paddingLeft="15dp"
             android:paddingRight="10dp"
+            android:layout_marginTop="3dp"
             android:gravity="center_vertical"
             android:lineSpacingMultiplier="1.2"
             android:text="AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"

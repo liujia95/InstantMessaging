@@ -27,9 +27,9 @@ public class ImageLoader {
      */
     private ExecutorService          mThreadPool;
     /**
-     * 线程池的线程数量，默认为1
+     * 线程池的线程数量，默认为3
      */
-    private int  mThreadCount = 1;
+    private int  mThreadCount = 3;
     /**
      * 队列的调度方式
      */
@@ -81,7 +81,7 @@ public class ImageLoader {
         if (mInstance == null) {
             synchronized (ImageLoader.class) {
                 if (mInstance == null) {
-                    mInstance = new ImageLoader(1, Type.LIFO);
+                    mInstance = new ImageLoader(3, Type.LIFO);
                 }
             }
         }

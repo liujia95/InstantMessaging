@@ -19,18 +19,18 @@ import me.liujia95.instantmessaging.utils.UIUtils;
 import me.liujia95.instantmessaging.view.BubbleImageView;
 
 /**
- * Created by Administrator on 2016/3/7 21:21.
+ * Created by Administrator on 2016/3/8 12:56.
  */
-public class ConversationMyIMAGEViewHolder extends RecyclerView.ViewHolder implements View.OnTouchListener {
+public class ConversationYourIMAGEViewHolder extends RecyclerView.ViewHolder implements View.OnTouchListener {
 
-    @InjectView(R.id.item_conversation_my_image_iv_img)
-    BubbleImageView mIvImg;
-    @InjectView(R.id.item_conversation_my_image_iv_icon)
+    @InjectView(R.id.item_conversation_your_image_iv_icon)
     ImageView       mIvIcon;
+    @InjectView(R.id.item_conversation_your_image_iv_img)
+    BubbleImageView mIvImg;
+    private GestureDetector mDetector;
 
-    GestureDetector mDetector;
 
-    public ConversationMyIMAGEViewHolder(View itemView) {
+    public ConversationYourIMAGEViewHolder(View itemView) {
         super(itemView);
         ButterKnife.inject(this, itemView);
         initListener();
@@ -38,6 +38,7 @@ public class ConversationMyIMAGEViewHolder extends RecyclerView.ViewHolder imple
 
     private void initListener() {
         mIvImg.setOnTouchListener(this);
+
         mDetector = new GestureDetector(UIUtils.getContext(), new GestureDetector.SimpleOnGestureListener() {
             @Override
             public boolean onDown(MotionEvent e) {

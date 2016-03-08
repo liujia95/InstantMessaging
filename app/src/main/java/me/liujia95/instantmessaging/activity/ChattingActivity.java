@@ -23,6 +23,7 @@ import com.hyphenate.EMMessageListener;
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMMessage;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.ButterKnife;
@@ -330,9 +331,18 @@ public class ChattingActivity extends AppCompatActivity implements View.OnClickL
             List<ConversationModel> list = intent.getParcelableArrayListExtra(SwitchImgActivity.KEY_SWITCH_IMAGE);
 
             Toast.makeText(this, "@@list size:" + list.size(), Toast.LENGTH_SHORT).show();
+            for (ConversationModel model: list) {
+                LogUtils.d("@@@ model type:"+model.messageType);
+                LogUtils.d("@@@ model message:"+model.message);
+            }
 
-            mDatas.addAll(list);
+            ArrayList<ConversationModel> datas = ConversationDao.selectLastDatas(mChatObj, EMClient.getInstance().getCurrentUser(), list.size());
+            mDatas.addAll(datas);
+
+            LogUtils.d("@@ datas last:" + mDatas.get(mDatas.size() - 1).messageType);
+
             mAdapter.notifyDataSetChanged();
+            scrollToLast();
         }
         super.onActivityResult(requestCode, resultCode, intent);
     }
