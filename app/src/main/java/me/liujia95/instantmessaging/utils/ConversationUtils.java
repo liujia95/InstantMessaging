@@ -5,7 +5,6 @@ import android.content.Intent;
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMMessage;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -41,11 +40,13 @@ public class ConversationUtils {
      */
     public static void ergodicConvertion(List<ConversationModel> list) {
         for (ConversationModel model : list) {
-            LogUtils.d("------------------------");
-            LogUtils.d("date:" + DateUtils.getDateFormat(model.date));
-            LogUtils.d("from:" + model.from);
-            LogUtils.d("to:" + model.to);
-            LogUtils.d("message:" + model.message);
+            LogUtils.d("**------------------------");
+            LogUtils.d("**date:" + DateUtils.getDateFormat(model.date));
+            LogUtils.d("**type:" + model.messageType);
+            LogUtils.d("**state:" + model.messageState);
+            LogUtils.d("**from:" + model.from);
+            LogUtils.d("**to:" + model.to);
+            LogUtils.d("**message:" + model.message);
             LogUtils.d("------------------------");
         }
     }
@@ -78,11 +79,10 @@ public class ConversationUtils {
      *
      * @param selectedImage 选中的图片路径
      * @param chatObj       聊天对象
-     * @return 聊天集合
+     * @return 选中的图片数
      */
-    public static ArrayList<ConversationModel> sendImage(List<String> selectedImage, String chatObj) {
-        ArrayList<ConversationModel> list = new ArrayList<>();
-
+    public static int sendImage(List<String> selectedImage, String chatObj) {
+        int count = 0;
         for (String imagePath : selectedImage) {
             LogUtils.d("@@ img path:" + imagePath);
 
@@ -108,9 +108,9 @@ public class ConversationUtils {
             model.message = imagePath;
             //把图片文件地址保存到聊天记录数据库中
             ConversationDao.insert(model);
-            list.add(model);
+            count++;
         }
-        return list;
+        return count;
     }
 
 

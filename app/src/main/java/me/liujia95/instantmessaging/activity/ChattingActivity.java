@@ -23,6 +23,7 @@ import com.hyphenate.EMMessageListener;
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMMessage;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.ButterKnife;
@@ -327,20 +328,12 @@ public class ChattingActivity extends AppCompatActivity implements View.OnClickL
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
         if (requestCode == REQUEST_CODE_SWITCH_IMAGE && resultCode == RESULT_OK) {
-            List<ConversationModel> list = intent.getParcelableArrayListExtra(SwitchImgActivity.KEY_SWITCH_IMAGE);
+            int count = intent.getIntExtra(SwitchImgActivity.KEY_SWITCH_IMAGE, 0);
 
-            Toast.makeText(this, "@@list size:" + list.size(), Toast.LENGTH_SHORT).show();
-            for (ConversationModel model : list) {
-                LogUtils.d("@@@ model type:" + model.messageType);
-                LogUtils.d("@@@ model message:" + model.message);
-            }
-
-            //TODO： 这有BUG待解决！！
-            mDatas = ConversationDao.selectAllByChatObj(mChatObj, EMClient.getInstance().getCurrentUser());
+            //根据选择的图片数，查询数据库中最后几条图片
+            ArrayList<ConversationModel> models = ConversationDao.selectLastDatas(mChatObj, EMClient.getInstance().getCurrentUser(), count);
+            mDatas.addAll(models);
             mAdapter.setDatas(mDatas);
-            //            if(mDatas.size() != 0){
-            //                LogUtils.d("@@ datas last:" + mDatas.get(mDatas.size() - 1).messageType);
-            //            }
 
             mAdapter.notifyDataSetChanged();
             scrollToLast();

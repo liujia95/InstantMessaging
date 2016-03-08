@@ -35,11 +35,9 @@ import java.util.List;
 
 import me.liujia95.instantmessaging.R;
 import me.liujia95.instantmessaging.bean.ImageFloder;
-import me.liujia95.instantmessaging.db.model.ConversationModel;
 import me.liujia95.instantmessaging.imageloader.ListImageDirPopupWindow;
 import me.liujia95.instantmessaging.imageloader.MyAdapter;
 import me.liujia95.instantmessaging.utils.ConversationUtils;
-import me.liujia95.instantmessaging.utils.LogUtils;
 
 
 public class SwitchImgActivity extends AppCompatActivity implements ListImageDirPopupWindow.OnImageDirSelected {
@@ -332,13 +330,11 @@ public class SwitchImgActivity extends AppCompatActivity implements ListImageDir
 
                 Intent intent = getIntent();
                 String chatObj = intent.getStringExtra(ChattingActivity.KEY_CHAT_OBJ);
-                //发送图片，返回存放所发图片信息集合，需传到会话界面的datas中
-                ArrayList<ConversationModel> list = ConversationUtils.sendImage(selectedImage, chatObj);
-
-                LogUtils.d("@@ 0.0 list:" + list.size());
+                //发送图片，返回存放所发图片数目，需传到会话界面的datas中
+                int count = ConversationUtils.sendImage(selectedImage, chatObj);
 
                 Intent data = new Intent();
-                data.putParcelableArrayListExtra(KEY_SWITCH_IMAGE, list);
+                data.putExtra(KEY_SWITCH_IMAGE,count);
                 setResult(RESULT_OK, data);
                 finish();
                 break;
