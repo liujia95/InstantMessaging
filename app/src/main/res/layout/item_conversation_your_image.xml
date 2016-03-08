@@ -27,6 +27,8 @@
             android:adjustViewBounds="true"
             android:maxHeight="120dp"
             android:maxWidth="240dp"
+            android:minHeight="80dp"
+            android:minWidth="40dp"
             app:bubble_angle="4dp"
             app:bubble_arrowHeight="8dp"
             app:bubble_arrowLocation="left"

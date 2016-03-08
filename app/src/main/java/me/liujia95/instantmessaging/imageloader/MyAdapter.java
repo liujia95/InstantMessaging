@@ -12,6 +12,7 @@ import java.util.List;
 import me.liujia95.instantmessaging.R;
 import me.liujia95.instantmessaging.imageloader.utils.CommonAdapter;
 import me.liujia95.instantmessaging.imageloader.utils.ViewHolder;
+import me.liujia95.instantmessaging.utils.LogUtils;
 
 
 public class MyAdapter extends CommonAdapter<String> {
@@ -62,6 +63,7 @@ public class MyAdapter extends CommonAdapter<String> {
                     mSelectedImage.add(mDirPath + "/" + item);
                     mSelect.setImageResource(R.drawable.pictures_selected);
                     mImageView.setColorFilter(Color.parseColor("#77000000"));
+                    LogUtils.d("@@MyAdapter 设置了滤镜");
                 }
 
             }

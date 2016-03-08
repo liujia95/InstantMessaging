@@ -23,7 +23,6 @@ import com.hyphenate.EMMessageListener;
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMMessage;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.ButterKnife;
@@ -337,9 +336,11 @@ public class ChattingActivity extends AppCompatActivity implements View.OnClickL
             }
 
             //TODO： 这有BUG待解决！！
-            ArrayList<ConversationModel> datas = ConversationDao.selectAllByChatObj(mChatObj, EMClient.getInstance().getCurrentUser());
-            mAdapter.setDatas(datas);
-            LogUtils.d("@@ datas last:" + mDatas.get(mDatas.size() - 1).messageType);
+            mDatas = ConversationDao.selectAllByChatObj(mChatObj, EMClient.getInstance().getCurrentUser());
+            mAdapter.setDatas(mDatas);
+            //            if(mDatas.size() != 0){
+            //                LogUtils.d("@@ datas last:" + mDatas.get(mDatas.size() - 1).messageType);
+            //            }
 
             mAdapter.notifyDataSetChanged();
             scrollToLast();

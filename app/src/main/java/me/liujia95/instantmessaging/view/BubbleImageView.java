@@ -5,6 +5,7 @@ import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.BitmapShader;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
@@ -16,12 +17,16 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.util.TypedValue;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
 import android.widget.ImageView;
 
 import me.liujia95.instantmessaging.R;
+import me.liujia95.instantmessaging.utils.LogUtils;
 
 
-public class BubbleImageView extends ImageView {
+public class BubbleImageView extends ImageView implements GestureDetector.OnGestureListener {
+
 
     private static final int           LOCATION_LEFT           = 0;
     private static final Bitmap.Config BITMAP_CONFIG           = Bitmap.Config.ARGB_8888;
@@ -42,6 +47,11 @@ public class BubbleImageView extends ImageView {
     private int          mBitmapWidth;
     private int          mBitmapHeight;
 
+    /**
+     * 监听手势
+     */
+    private GestureDetector mGestureDetector;
+
     public BubbleImageView(Context context) {
         super(context);
         initView(null);
@@ -54,7 +64,9 @@ public class BubbleImageView extends ImageView {
 
     public BubbleImageView(Context context, AttributeSet attrs) {
         super(context, attrs);
+        mGestureDetector = new GestureDetector(context, this);
         initView(attrs);
+        this.setColorFilter(null);
     }
 
     private void initView(AttributeSet attrs) {
@@ -78,6 +90,16 @@ public class BubbleImageView extends ImageView {
                     mArrowLocation);
             a.recycle();
         }
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        //在cancel里将滤镜取消，注意不要捕获cacncel事件,mGestureDetector里有对cancel的捕获操作
+        //在滑动GridView时，AbsListView会拦截掉Move和UP事件，直接给子控件返回Cancel
+        if (event.getActionMasked() == MotionEvent.ACTION_CANCEL) {
+            removeFilter();
+        }
+        return mGestureDetector.onTouchEvent(event);
     }
 
     @Override
@@ -245,5 +267,80 @@ public class BubbleImageView extends ImageView {
     private int dp2px(int dp) {
         return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp,
                 getContext().getResources().getDisplayMetrics());
+    }
+
+    /**
+     * 设置滤镜
+     */
+    private void setFilter() {
+        LogUtils.d("@@设置滤镜！");
+        //先获取设置的src图片
+        Drawable drawable = getDrawable();
+        //当src图片为Null，获取背景图片
+        if (drawable == null) {
+            drawable = getBackground();
+        }
+        if (drawable != null) {
+            //设置滤镜
+            LogUtils.d("@@真正设置滤镜！");
+            //drawable.setColorFilter(Color.GRAY, PorterDuff.Mode.MULTIPLY);
+            this.setColorFilter(Color.parseColor("#77000000"));
+        }
+    }
+
+    /**
+     * 清除滤镜
+     */
+    private void removeFilter() {
+        //先获取设置的src图片
+        Drawable drawable = getDrawable();
+        //当src图片为Null，获取背景图片
+        if (drawable == null) {
+            drawable = getBackground();
+        }
+        if (drawable != null) {
+            //清除滤镜
+            drawable.clearColorFilter();
+        }
+    }
+
+    @Override
+    public boolean onDown(MotionEvent e) {
+        setFilter();
+        //这里必须返回true，表示捕获本次touch事件
+        return true;
+    }
+
+    @Override
+    public void onShowPress(MotionEvent e) {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public boolean onSingleTapUp(MotionEvent e) {
+        removeFilter();
+        performClick();
+        return false;
+    }
+
+    @Override
+    public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX,
+                            float distanceY) {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    @Override
+    public void onLongPress(MotionEvent e) {
+        //长安时，手动触发长安事件
+        performLongClick();
+    }
+
+    @Override
+    public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
+                           float velocityY) {
+        // TODO Auto-generated method stub
+        return false;
     }
 }
