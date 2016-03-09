@@ -20,7 +20,7 @@ import me.liujia95.instantmessaging.view.BubbleImageView;
 /**
  * Created by Administrator on 2016/3/7 21:21.
  */
-public class ConversationMyIMAGEViewHolder extends RecyclerView.ViewHolder {
+public class ConversationSendIMAGEViewHolder extends RecyclerView.ViewHolder {
 
     @InjectView(R.id.item_conversation_my_image_iv_img)
     BubbleImageView mIvImg;
@@ -28,7 +28,7 @@ public class ConversationMyIMAGEViewHolder extends RecyclerView.ViewHolder {
     ImageView       mIvIcon;
 
 
-    public ConversationMyIMAGEViewHolder(View itemView) {
+    public ConversationSendIMAGEViewHolder(View itemView) {
         super(itemView);
         ButterKnife.inject(this, itemView);
     }

@@ -24,7 +24,7 @@ import me.liujia95.instantmessaging.view.BubbleImageView;
 /**
  * Created by Administrator on 2016/3/8 12:56.
  */
-public class ConversationYourIMAGEViewHolder extends RecyclerView.ViewHolder implements View.OnTouchListener {
+public class ConversationReceivedIMAGEViewHolder extends RecyclerView.ViewHolder implements View.OnTouchListener {
 
     @InjectView(R.id.item_conversation_your_image_iv_icon)
     ImageView       mIvIcon;
@@ -33,7 +33,7 @@ public class ConversationYourIMAGEViewHolder extends RecyclerView.ViewHolder imp
     private GestureDetector mDetector;
 
 
-    public ConversationYourIMAGEViewHolder(View itemView) {
+    public ConversationReceivedIMAGEViewHolder(View itemView) {
         super(itemView);
         ButterKnife.inject(this, itemView);
         initListener();

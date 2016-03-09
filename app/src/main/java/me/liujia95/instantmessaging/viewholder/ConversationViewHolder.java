@@ -56,7 +56,7 @@ public class ConversationViewHolder extends RecyclerView.ViewHolder {
 
         mTvTitle.setText(chatObj);
 
-        SpannableStringBuilder sb = GifUtils.handler(mTvDesc, bean.message);
+        SpannableStringBuilder sb = GifUtils.faceHandler(mTvDesc, bean.message);
         mTvDesc.setText(sb);
         String dateFormat = DateUtils.getDateFormat(date.getTime());
         mTvTime.setText(dateFormat);

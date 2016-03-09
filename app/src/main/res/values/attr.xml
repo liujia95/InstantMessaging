@@ -25,4 +25,5 @@
         <!-- 进度的颜色 -->
         <attr name="strokeColor" format="color"/>
     </declare-styleable>
+
 </resources>

@@ -177,7 +177,31 @@ public class ChattingActivity extends AppCompatActivity implements View.OnClickL
             gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    String content = staticTusijiList.get(position);
+                    ConversationModel model = new ConversationModel();
+                    model.from = EMClient.getInstance().getCurrentUser();
+                    model.to = mChatObj;
+                    model.messageType = EMMessage.Type.CMD;
+                    model.messageState = MessageState.UNDELIVERED;
+                    model.message = content;
+                    model.date = System.currentTimeMillis();
 
+                    //添加到数据库
+                    ConversationDao.insert(model);
+                    if (RecentConversationDao.isChated(mChatObj)) {
+                        //如果跟他聊过，更新最新聊天记录
+                        RecentConversationDao.update(model, mChatObj);
+                        LogUtils.d("___chatting 聊过");
+                    } else {
+                        //如果没跟他聊过，插入一条
+                        RecentConversationDao.insert(model);
+                        LogUtils.d("___chatting 没聊过");
+                    }
+
+                    mDatas.add(model);
+                    mAdapter.notifyDataSetChanged();
+                    //把RecyclerView定位到最底下
+                    scrollToLast();
                 }
             });
 

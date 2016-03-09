@@ -1,1 +1,1 @@
-include ':app', ':gradientuilibrary'
+include ':app', ':gradientuilibrary', ':gifImageViewlibrary'

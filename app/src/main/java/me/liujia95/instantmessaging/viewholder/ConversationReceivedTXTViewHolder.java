@@ -12,32 +12,28 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import me.liujia95.instantmessaging.R;
 import me.liujia95.instantmessaging.db.model.ConversationModel;
-import me.liujia95.instantmessaging.utils.LogUtils;
 import me.liujia95.instantmessaging.utils.gif.GifUtils;
 
 /**
  * Created by Administrator on 2016/3/1 15:28.
  */
-public class ConversationMyTXTViewHolder extends RecyclerView.ViewHolder {
+public class ConversationReceivedTXTViewHolder extends RecyclerView.ViewHolder {
 
-    @InjectView(R.id.item_conversation_my_txt_tv_message)
-    TextView  mTvMessage;
-    @InjectView(R.id.item_conversation_my_txt_iv_icon)
+    @InjectView(R.id.item_conversation_your_txt_iv_icon)
     ImageView mIvIcon;
+    @InjectView(R.id.item_conversation_your_txt_tv_message)
+    TextView  mTvMessage;
 
 
-    public ConversationMyTXTViewHolder(View itemView) {
+    public ConversationReceivedTXTViewHolder(View itemView) {
         super(itemView);
         ButterKnife.inject(this, itemView);
     }
 
-    public void loadData(ConversationModel model) {
-        if (model.messageType == EMMessage.Type.TXT) {
-            LogUtils.d("txt " + model.messageType);
-            SpannableStringBuilder sb = GifUtils.handler(mTvMessage, model.message);
+    public void loadData(ConversationModel model){
+        if(model.messageType == EMMessage.Type.TXT){
+            SpannableStringBuilder sb = GifUtils.faceHandler(mTvMessage, model.message);
             mTvMessage.setText(sb);
         }
     }
-
-
 }

@@ -13,10 +13,11 @@ import java.util.List;
 import me.liujia95.instantmessaging.R;
 import me.liujia95.instantmessaging.db.model.ConversationModel;
 import me.liujia95.instantmessaging.utils.UIUtils;
-import me.liujia95.instantmessaging.viewholder.ConversationMyIMAGEViewHolder;
-import me.liujia95.instantmessaging.viewholder.ConversationMyTXTViewHolder;
-import me.liujia95.instantmessaging.viewholder.ConversationYourIMAGEViewHolder;
-import me.liujia95.instantmessaging.viewholder.ConversationYourTXTViewHolder;
+import me.liujia95.instantmessaging.viewholder.ConversationSendFACEViewHolder;
+import me.liujia95.instantmessaging.viewholder.ConversationSendIMAGEViewHolder;
+import me.liujia95.instantmessaging.viewholder.ConversationSendTXTViewHolder;
+import me.liujia95.instantmessaging.viewholder.ConversationReceivedIMAGEViewHolder;
+import me.liujia95.instantmessaging.viewholder.ConversationReceivedTXTViewHolder;
 
 /**
  * Created by Administrator on 2016/3/1 14:37.
@@ -28,12 +29,14 @@ public class ConversationAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     private static final int TYPE_YOUR_TXT   = 1;
     private static final int TYPE_MY_IMAGE   = 2;
     private static final int TYPE_YOUR_IMAGE = 3;
+    private static final int TYPE_MY_FACE    = 4;
+    private static final int TYPE_YOUR_FACE  = 5;
 
     public ConversationAdapter(List<ConversationModel> list) {
         mDatas = list;
     }
 
-    public void setDatas(List<ConversationModel> list){
+    public void setDatas(List<ConversationModel> list) {
         mDatas = list;
     }
 
@@ -44,11 +47,15 @@ public class ConversationAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             //谁发的消息，就代表谁说的话
             if (model.messageType == EMMessage.Type.IMAGE) {
                 return TYPE_MY_IMAGE;
+            } else if (model.messageType == EMMessage.Type.CMD) {
+                return TYPE_MY_FACE;
             }
             return TYPE_MY_TXT;
         } else {
             if (model.messageType == EMMessage.Type.IMAGE) {
                 return TYPE_YOUR_IMAGE;
+            } else if (model.messageType == EMMessage.Type.CMD) {
+                return TYPE_YOUR_FACE;
             }
             return TYPE_YOUR_TXT;
         }
@@ -57,17 +64,20 @@ public class ConversationAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if (viewType == TYPE_MY_TXT) {
-            View view = LayoutInflater.from(UIUtils.getContext()).inflate(R.layout.item_conversation_my_txt, parent, false);
-            return new ConversationMyTXTViewHolder(view);
+            View view = LayoutInflater.from(UIUtils.getContext()).inflate(R.layout.item_conversation_send_txt, parent, false);
+            return new ConversationSendTXTViewHolder(view);
         } else if (viewType == TYPE_YOUR_TXT) {
-            View view = LayoutInflater.from(UIUtils.getContext()).inflate(R.layout.item_conversation_your_txt, parent, false);
-            return new ConversationYourTXTViewHolder(view);
+            View view = LayoutInflater.from(UIUtils.getContext()).inflate(R.layout.item_conversation_received_txt, parent, false);
+            return new ConversationReceivedTXTViewHolder(view);
         } else if (viewType == TYPE_MY_IMAGE) {
-            View view = LayoutInflater.from(UIUtils.getContext()).inflate(R.layout.item_conversation_my_image, parent, false);
-            return new ConversationMyIMAGEViewHolder(view);
+            View view = LayoutInflater.from(UIUtils.getContext()).inflate(R.layout.item_conversation_send_image, parent, false);
+            return new ConversationSendIMAGEViewHolder(view);
         } else if (viewType == TYPE_YOUR_IMAGE) {
-            View view = LayoutInflater.from(UIUtils.getContext()).inflate(R.layout.item_conversation_your_image, parent, false);
-            return new ConversationYourIMAGEViewHolder(view);
+            View view = LayoutInflater.from(UIUtils.getContext()).inflate(R.layout.item_conversation_received_image, parent, false);
+            return new ConversationReceivedIMAGEViewHolder(view);
+        } else if (viewType == TYPE_MY_FACE) {
+            View view = LayoutInflater.from(UIUtils.getContext()).inflate(R.layout.item_conversation_send_face, parent, false);
+            return new ConversationSendFACEViewHolder(view);
         }
         return null;
     }
@@ -77,16 +87,19 @@ public class ConversationAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         int viewType = getItemViewType(position);
         ConversationModel model = mDatas.get(position);
         if (viewType == TYPE_MY_TXT) {
-            ConversationMyTXTViewHolder viewholder = (ConversationMyTXTViewHolder) holder;
+            ConversationSendTXTViewHolder viewholder = (ConversationSendTXTViewHolder) holder;
             viewholder.loadData(model);
         } else if (viewType == TYPE_YOUR_TXT) {
-            ConversationYourTXTViewHolder viewholder = (ConversationYourTXTViewHolder) holder;
+            ConversationReceivedTXTViewHolder viewholder = (ConversationReceivedTXTViewHolder) holder;
             viewholder.loadData(model);
         } else if (viewType == TYPE_MY_IMAGE) {
-            ConversationMyIMAGEViewHolder viewholder = (ConversationMyIMAGEViewHolder) holder;
+            ConversationSendIMAGEViewHolder viewholder = (ConversationSendIMAGEViewHolder) holder;
             viewholder.loadData(model);
         } else if (viewType == TYPE_YOUR_IMAGE) {
-            ConversationYourIMAGEViewHolder viewholder = (ConversationYourIMAGEViewHolder) holder;
+            ConversationReceivedIMAGEViewHolder viewholder = (ConversationReceivedIMAGEViewHolder) holder;
+            viewholder.loadData(model);
+        } else if (viewType == TYPE_MY_FACE) {
+            ConversationSendFACEViewHolder viewholder = (ConversationSendFACEViewHolder) holder;
             viewholder.loadData(model);
         }
     }

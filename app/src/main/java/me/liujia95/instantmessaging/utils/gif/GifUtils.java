@@ -6,18 +6,20 @@ import android.text.SpannableStringBuilder;
 import android.text.style.ImageSpan;
 import android.widget.TextView;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import me.liujia95.instantmessaging.utils.LogUtils;
 import me.liujia95.instantmessaging.utils.UIUtils;
 
 /**
  * Created by Administrator on 2016/3/9 15:07.
  */
 public class GifUtils {
-    public static SpannableStringBuilder handler(final TextView gifTextView, String content) {
+    public static SpannableStringBuilder faceHandler(final TextView gifTextView, String content) {
         SpannableStringBuilder sb = new SpannableStringBuilder(content);
         String regex = "(\\#\\[face/png/f_static_)\\d{3}(.png\\]\\#)";
         Pattern p = Pattern.compile(regex);
@@ -35,6 +37,7 @@ public class GifUtils {
                 sb.setSpan(new AnimatedImageSpan(new AnimatedGifDrawable(is, new AnimatedGifDrawable.UpdateListener() {
                             @Override
                             public void update() {
+                                LogUtils.d("@@@@@@@@@---faceHandler");
                                 gifTextView.postInvalidate();
                             }
                         })), m.start(), m.end(),
@@ -52,5 +55,25 @@ public class GifUtils {
             }
         }
         return sb;
+    }
+
+    final static int BUFFER_SIZE = 4096;
+
+    public static byte[] tusijiHandler(String content) {
+        String gif = "tusiji/gif/" + content.replace("t_static_", "t_").replace(".png", ".gif");
+        try {
+            InputStream is = UIUtils.getContext().getAssets().open(gif);
+            ByteArrayOutputStream outStream = new ByteArrayOutputStream();
+            byte[] data = new byte[BUFFER_SIZE];
+            int count = -1;
+            while ((count = is.read(data, 0, BUFFER_SIZE)) != -1) {
+                outStream.write(data, 0, count);
+            }
+            data = null;
+            return outStream.toByteArray();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

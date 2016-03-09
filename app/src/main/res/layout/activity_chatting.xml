@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <cn.dreamtobe.kpswitch.widget.CustomRootLayout
+    android:id="@+id/root_layout"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/root_layout"
     android:orientation="vertical">
 
     <android.support.v7.widget.RecyclerView
@@ -49,29 +49,36 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1">
 
-                <EditText
-                    android:id="@+id/chatting_send_edt"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:background="@drawable/chattting_edit_bg"
-                    android:gravity="center_vertical|left"
-                    android:minHeight="38dp"
-                    android:padding="5dp"
-                    android:textColor="@android:color/black"
-                    android:textSize="14sp"
-                    android:visibility="visible"/>
-
-                <ImageView
-                    android:id="@+id/conversation_iv_face"
-                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="right"
-                    android:layout_marginRight="5dp"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:padding="7dp"
-                    android:src="@drawable/conversation_biaoqing_selector"/>
+                    android:orientation="horizontal">
 
+                    <EditText
+                        android:background="@null"
+                        android:id="@+id/chatting_send_edt"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center_vertical|left"
+                        android:minHeight="38dp"
+                        android:padding="5dp"
+                        android:textColor="@android:color/black"
+                        android:textSize="14sp"
+                        android:visibility="visible"/>
+
+                    <ImageView
+                        android:id="@+id/conversation_iv_face"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="right"
+                        android:layout_marginRight="5dp"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:padding="7dp"
+                        android:src="@drawable/conversation_biaoqing_selector"/>
+                </LinearLayout>
             </FrameLayout>
 
             <TextView
