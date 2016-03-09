@@ -71,6 +71,12 @@ public class UIUtils {
         return width;
     }
 
+    public static int getScreenHeight(){
+        WindowManager wm = (WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE);
+        int height = wm.getDefaultDisplay().getHeight();
+        return height;
+    }
+
     public static String getRunningActivityName() {
         ActivityManager activityManager = (ActivityManager) getContext().getSystemService(Context.ACTIVITY_SERVICE);
         String runningActivity = activityManager.getRunningTasks(1).get(0).topActivity.getClassName();

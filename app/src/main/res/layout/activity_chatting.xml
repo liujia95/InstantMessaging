@@ -3,6 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/root_layout"
     android:orientation="vertical">
 
     <android.support.v7.widget.RecyclerView
@@ -61,7 +62,7 @@
                     android:visibility="visible"/>
 
                 <ImageView
-                    android:id="@+id/conversation_iv_biaoqing"
+                    android:id="@+id/conversation_iv_face"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="right"
@@ -131,10 +132,12 @@
             android:background="#d5d3d5"/>
 
         <LinearLayout
+            android:id="@+id/chatting_ll_plus_container"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:padding="10dp">
+            android:padding="10dp"
+            android:visibility="gone">
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -183,6 +186,11 @@
 
             </LinearLayout>
         </LinearLayout>
+
+        <include
+            android:id="@+id/chatting_ll_face_container"
+            layout="@layout/include_face_container"/>
+
     </cn.dreamtobe.kpswitch.widget.PanelLayout>
 
 </cn.dreamtobe.kpswitch.widget.CustomRootLayout>

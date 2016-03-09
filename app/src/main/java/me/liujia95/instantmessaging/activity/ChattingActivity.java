@@ -1,21 +1,32 @@
 package me.liujia95.instantmessaging.activity;
 
 import android.content.Intent;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
+import android.text.Selection;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
 import android.text.TextWatcher;
+import android.text.style.ImageSpan;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,6 +36,8 @@ import com.hyphenate.chat.EMMessage;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -32,6 +45,8 @@ import cn.dreamtobe.kpswitch.util.KeyboardUtil;
 import cn.dreamtobe.kpswitch.widget.PanelLayout;
 import me.liujia95.instantmessaging.R;
 import me.liujia95.instantmessaging.adapter.ConversationAdapter;
+import me.liujia95.instantmessaging.adapter.FaceGVAdapter;
+import me.liujia95.instantmessaging.adapter.FaceVPAdapter;
 import me.liujia95.instantmessaging.db.dao.ConversationDao;
 import me.liujia95.instantmessaging.db.dao.RecentConversationDao;
 import me.liujia95.instantmessaging.db.model.ConversationModel;
@@ -44,7 +59,7 @@ import me.liujia95.instantmessaging.utils.UIUtils;
 /**
  * 适配了 Panel<->Keybord 切换冲突
  */
-public class ChattingActivity extends AppCompatActivity implements View.OnClickListener {
+public class ChattingActivity extends AppCompatActivity implements View.OnClickListener, View.OnLayoutChangeListener {
 
     @InjectView(R.id.content_ryv)
     RecyclerView mRecyclerview;
@@ -62,14 +77,45 @@ public class ChattingActivity extends AppCompatActivity implements View.OnClickL
     TextView     mTvPressSay;
     @InjectView(R.id.conversation_fl_input)
     FrameLayout  mFlInput;
-    @InjectView(R.id.conversation_iv_biaoqing)
-    ImageView    mIvBiaoqing;
+    @InjectView(R.id.conversation_iv_face)
+    ImageView    mIvFace;
     @InjectView(R.id.send_img_iv)
     ImageView    mIvImg;
+    @InjectView(R.id.chatting_ll_plus_container)
+    LinearLayout mPlusContainer;
+    @InjectView(R.id.chatting_ll_face_container)
+    LinearLayout mFaceContainer;
+    @InjectView(R.id.root_layout)
+    View         activityRootView;//Activity最外层的Layout视图
+
+
+    /**#################################################################**/
+    /**
+     * 表情部分
+     **/
+
+    @InjectView(R.id.face_viewpager)
+    ViewPager    mViewPager; //表情viewpager
+    @InjectView(R.id.face_dots_container)
+    LinearLayout mDotsLayout;   //表情下的小圆点
+
+    private List<View> views = new ArrayList<View>(); //每一页表情的集合
+    private List<String> staticFacesList; //表情的数量
+    // 6列4行
+    private int columns = 6;
+    private int rows    = 4;
+
+    /**
+     * ################################################################
+     **/
+
+    //软件盘弹起后所占高度阀值设置为屏幕高度的1/3
+    private int keyHeight = UIUtils.getScreenHeight() / 3;
 
     private String                  mChatObj;
     private List<ConversationModel> mDatas;
     private ConversationAdapter     mAdapter;
+
 
     public static String KEY_CHAT_OBJ              = "key_chat_obj"; //聊天对象
     public static int    REQUEST_CODE_SWITCH_IMAGE = 100;
@@ -80,9 +126,16 @@ public class ChattingActivity extends AppCompatActivity implements View.OnClickL
         setContentView(R.layout.activity_chatting);
 
         ButterKnife.inject(this);
-
+        initView();
         initData();
         initListener();
+    }
+
+    private void initView() {
+        //初始化表情列表staticFacesList
+        initStaticFaces();
+        //初始化表情
+        initViewPager();
     }
 
     //    @Override
@@ -121,12 +174,17 @@ public class ChattingActivity extends AppCompatActivity implements View.OnClickL
     }
 
     private void initListener() {
+        activityRootView.addOnLayoutChangeListener(this);
+
+        mViewPager.setOnPageChangeListener(new PageChange());
+
         mRecyclerview.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
                     KeyboardUtil.hideKeyboard(mEtInput);
                     mPanelRoot.setVisibility(View.GONE);
+                    mIvFace.setSelected(false);
                 }
                 return false;
             }
@@ -215,7 +273,7 @@ public class ChattingActivity extends AppCompatActivity implements View.OnClickL
         mIvPlus.setOnClickListener(this);
         mIvVoice.setOnClickListener(this);
         mTvSend.setOnClickListener(this);
-        mIvBiaoqing.setOnClickListener(this);
+        mIvFace.setOnClickListener(this);
         mIvImg.setOnClickListener(this);
     }
 
@@ -229,20 +287,13 @@ public class ChattingActivity extends AppCompatActivity implements View.OnClickL
     @Override
     public void onClick(View v) {
         if (v == mIvPlus) {
-            if (mPanelRoot.getVisibility() == View.VISIBLE) {
-                KeyboardUtil.showKeyboard(mEtInput);
-            } else {
-                KeyboardUtil.hideKeyboard(mEtInput);
-                mPanelRoot.setVisibility(View.VISIBLE);
-
-                scrollToLast();
-            }
+            clickPlus();
         } else if (v == mIvVoice) {
             clickVoice();
         } else if (v == mTvSend) {
             clickSendTXTMessage();
-        } else if (v == mIvBiaoqing) {
-            clickBiaoqing();
+        } else if (v == mIvFace) {
+            clickFace();
         } else if (v == mIvImg) {
             Intent intent = new Intent(this, SwitchImgActivity.class);
             intent.putExtra(KEY_CHAT_OBJ, mChatObj);
@@ -250,6 +301,50 @@ public class ChattingActivity extends AppCompatActivity implements View.OnClickL
         }
     }
 
+    /**
+     * 点击加号
+     */
+    private void clickPlus() {
+        if (mPanelRoot.getVisibility() == View.VISIBLE) {
+            if (mFaceContainer.getVisibility() == View.VISIBLE) {
+                mFaceContainer.setVisibility(View.GONE);
+                mPlusContainer.setVisibility(View.VISIBLE);
+                mIvFace.setSelected(false);
+            } else {
+                KeyboardUtil.showKeyboard(mEtInput);
+            }
+        } else {
+            KeyboardUtil.hideKeyboard(mEtInput);
+            mPanelRoot.setVisibility(View.VISIBLE);
+            mPlusContainer.setVisibility(View.VISIBLE);
+            mFaceContainer.setVisibility(View.GONE);
+            mIvFace.setSelected(false);
+            scrollToLast();
+        }
+    }
+
+    /**
+     * 点击表情按钮
+     */
+    private void clickFace() {
+        if (mIvFace.isSelected()) {
+            //如果表情是亮的，再点一次，显示键盘
+            KeyboardUtil.showKeyboard(mEtInput);
+            mIvFace.setSelected(false);
+        } else {
+            //如果表情是灭的，再点一次，隐藏键盘
+            KeyboardUtil.hideKeyboard(mEtInput);
+            mPanelRoot.setVisibility(View.VISIBLE);
+            mFaceContainer.setVisibility(View.VISIBLE);
+            mPlusContainer.setVisibility(View.GONE);
+            mIvFace.setSelected(true);
+            scrollToLast();
+        }
+    }
+
+    /**
+     * 点击语言按钮
+     */
     private void clickVoice() {
         //如果输入栏是显示的，点击一次就隐藏
         if (mFlInput.getVisibility() == View.VISIBLE) {
@@ -272,7 +367,6 @@ public class ChattingActivity extends AppCompatActivity implements View.OnClickL
             KeyboardUtil.showKeyboard(mEtInput);
         }
     }
-
 
     /**
      * 点击消息发送
@@ -317,13 +411,6 @@ public class ChattingActivity extends AppCompatActivity implements View.OnClickL
         mEtInput.setText("");
     }
 
-    private void clickBiaoqing() {
-        if (mIvBiaoqing.isSelected()) {
-            mIvBiaoqing.setSelected(false);
-        } else {
-            mIvBiaoqing.setSelected(true);
-        }
-    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
@@ -347,6 +434,7 @@ public class ChattingActivity extends AppCompatActivity implements View.OnClickL
                 event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
             if (mPanelRoot.getVisibility() == View.VISIBLE) {
                 mPanelRoot.setVisibility(View.GONE);
+                mIvFace.setSelected(false);
                 return true;
             }
         }
@@ -379,4 +467,233 @@ public class ChattingActivity extends AppCompatActivity implements View.OnClickL
         RedPointManager.getInstance().disShow(mChatObj);
     }
 
+
+    @Override
+    public void onLayoutChange(View v, int left, int top, int right,
+                               int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
+        //现在认为只要控件将Activity向上推的高度超过了1/3屏幕高，就认为软键盘弹起
+        if (oldBottom != 0 && bottom != 0 && (oldBottom - bottom > keyHeight)) {
+            //Toast.makeText(this, "监听到软键盘弹起...", Toast.LENGTH_SHORT).show();
+            mIvFace.setSelected(false);
+        } else if (oldBottom != 0 && bottom != 0 && (bottom - oldBottom > keyHeight)) {
+            //Toast.makeText(this, "监听到软件盘关闭...", Toast.LENGTH_SHORT).show();
+
+        }
+
+    }
+
+
+    /**#################################################################**/
+    /**                         表情部分                                **/
+
+
+    /**
+     * 初始化表情
+     */
+    private void initViewPager() {
+        // 获取页数
+        for (int i = 0; i < getPagerCount(); i++) {
+            views.add(viewPagerItem(i));//给每一页添加对应的表情
+            ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(16, 16);
+            mDotsLayout.addView(dotsItem(i), params); //小圆点的显示
+        }
+        //给表情Viewpager的适配器添加表情
+        FaceVPAdapter mVpAdapter = new FaceVPAdapter(views);
+        //绑定适配器
+        mViewPager.setAdapter(mVpAdapter);
+        //默认使圆点选中第一个
+        mDotsLayout.getChildAt(0).setSelected(true);
+    }
+
+    /**
+     * 初始化表情列表staticFacesList
+     */
+    private void initStaticFaces() {
+        try {
+            staticFacesList = new ArrayList<String>();
+            String[] faces = getAssets().list("face/png");
+            //将Assets中的表情名称转为字符串一一添加进staticFacesList
+            for (int i = 0; i < faces.length; i++) {
+                staticFacesList.add(faces[i]);
+            }
+            //去掉删除图片
+            staticFacesList.remove("emotion_del_normal.png");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 根据页数，初始化每页显示的表情
+     *
+     * @param position
+     * @return
+     */
+    private View viewPagerItem(int position) {
+        LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
+        View layout = inflater.inflate(R.layout.face_gridview, null);//表情布局
+        GridView gridview = (GridView) layout.findViewById(R.id.chart_face_gv);
+        /**
+         * 注：因为每一页末尾都有一个删除图标，所以每一页的实际表情columns *　rows　－　1; 空出最后一个位置给删除图标
+         * */
+        List<String> subList = new ArrayList<String>();
+        subList.addAll(staticFacesList
+                .subList(position * (columns * rows - 1),
+                        (columns * rows - 1) * (position + 1) > staticFacesList
+                                .size() ? staticFacesList.size() : (columns
+                                * rows - 1)
+                                * (position + 1)));
+        /**
+         * 末尾添加删除图标
+         * */
+        subList.add("emotion_del_normal.png");
+        FaceGVAdapter mGvAdapter = new FaceGVAdapter(subList, this);
+        gridview.setAdapter(mGvAdapter);
+        gridview.setNumColumns(columns);
+        // 单击表情执行的操作
+        gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                try {
+                    String png = ((TextView) ((LinearLayout) view).getChildAt(1)).getText().toString();
+                    if (!png.contains("emotion_del_normal")) {// 如果不是删除图标
+                        insert(getFace(png)); //插入表情
+                    } else {
+                        delete(); //删除表情
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        return gridview;
+    }
+
+    /**
+     * 根据表情数量以及GridView设置的行数和列数计算Pager数量
+     *
+     * @return
+     */
+    private int getPagerCount() {
+        int count = staticFacesList.size();
+        return count % (columns * rows - 1) == 0 ? count / (columns * rows - 1)
+                : count / (columns * rows - 1) + 1;
+    }
+
+    /**
+     * 向输入框里添加表情
+     */
+    private void insert(CharSequence text) {
+        int iCursorStart = Selection.getSelectionStart((mEtInput.getText()));
+        int iCursorEnd = Selection.getSelectionEnd((mEtInput.getText()));
+        if (iCursorStart != iCursorEnd) {
+             mEtInput.getText().replace(iCursorStart, iCursorEnd, "");
+        }
+        int iCursor = Selection.getSelectionEnd((mEtInput.getText()));
+        mEtInput.getText().insert(iCursor, text);
+    }
+
+    /**
+     * 删除图标执行事件
+     * 注：如果删除的是表情，在删除时实际删除的是tempText即图片占位的字符串，所以必需一次性删除掉tempText，才能将图片删除
+     */
+    private void delete() {
+        if (mEtInput.getText().length() != 0) {
+            int iCursorEnd = Selection.getSelectionEnd(mEtInput.getText());
+            int iCursorStart = Selection.getSelectionStart(mEtInput.getText());
+            if (iCursorEnd > 0) {
+                if (iCursorEnd == iCursorStart) {
+                    if (isDeletePng(iCursorEnd)) {
+                        String st = "#[face/png/f_static_000.png]#";
+                        ((Editable) mEtInput.getText()).delete(
+                                iCursorEnd - st.length(), iCursorEnd);
+                    } else {
+                        ((Editable) mEtInput.getText()).delete(iCursorEnd - 1,
+                                iCursorEnd);
+                    }
+                } else {
+                    ((Editable) mEtInput.getText()).delete(iCursorStart,
+                            iCursorEnd);
+                }
+            }
+        }
+    }
+
+
+    private ImageView dotsItem(int position) {
+        LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
+        View layout = inflater.inflate(R.layout.dot_image, null);
+        ImageView iv = (ImageView) layout.findViewById(R.id.face_dot);
+        iv.setId(position);
+        return iv;
+    }
+
+    /**
+     * 判断即将删除的字符串是否是图片占位字符串tempText 如果是：则将删除整个tempText
+     **/
+    private boolean isDeletePng(int cursor) {
+        String st = "#[face/png/f_static_000.png]#";
+        String content = mEtInput.getText().toString().substring(0, cursor);
+        if (content.length() >= st.length()) {
+            String checkStr = content.substring(content.length() - st.length(),
+                    content.length());
+            String regex = "(\\#\\[face/png/f_static_)\\d{3}(.png\\]\\#)";
+            Pattern p = Pattern.compile(regex);
+            Matcher m = p.matcher(checkStr);
+            return m.matches();
+        }
+        return false;
+    }
+
+    /**
+     * 返回的是一个可以和文字并存的图片+文字
+     *
+     * @param png
+     * @return
+     */
+    private SpannableStringBuilder getFace(String png) {
+        SpannableStringBuilder sb = new SpannableStringBuilder();
+        try {
+            /**
+             * 经过测试，虽然这里tempText被替换为png显示，但是但我单击发送按钮时，获取到輸入框的内容是tempText的值而不是png
+             * 所以这里对这个tempText值做特殊处理
+             * 格式：#[face/png/f_static_000.png]#，以方便判斷當前圖片是哪一個
+             * */
+            String tempText = "#[" + png + "]#";
+            sb.append(tempText);
+            sb.setSpan(
+                    new ImageSpan(ChattingActivity.this, BitmapFactory
+                            .decodeStream(getAssets().open(png))), sb.length()
+                            - tempText.length(), sb.length(),
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);//前后都不包括，即在指定范围的前面和后面插入新字符都不会应用新样式
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return sb;
+    }
+
+    /**
+     * 表情页改变时，dots效果也要跟着改变
+     */
+    class PageChange implements ViewPager.OnPageChangeListener {
+        @Override
+        public void onPageScrollStateChanged(int arg0) {
+        }
+
+        @Override
+        public void onPageScrolled(int arg0, float arg1, int arg2) {
+        }
+
+        @Override
+        public void onPageSelected(int arg0) {
+            for (int i = 0; i < mDotsLayout.getChildCount(); i++) {
+                mDotsLayout.getChildAt(i).setSelected(false);
+            }
+            mDotsLayout.getChildAt(arg0).setSelected(true);
+        }
+
+    }
 }

@@ -1,6 +1,7 @@
 package me.liujia95.instantmessaging.viewholder;
 
 import android.support.v7.widget.RecyclerView;
+import android.text.SpannableStringBuilder;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -12,6 +13,7 @@ import butterknife.InjectView;
 import me.liujia95.instantmessaging.R;
 import me.liujia95.instantmessaging.db.model.ConversationModel;
 import me.liujia95.instantmessaging.utils.LogUtils;
+import me.liujia95.instantmessaging.utils.gif.GifUtils;
 
 /**
  * Created by Administrator on 2016/3/1 15:28.
@@ -31,8 +33,11 @@ public class ConversationMyTXTViewHolder extends RecyclerView.ViewHolder {
 
     public void loadData(ConversationModel model) {
         if (model.messageType == EMMessage.Type.TXT) {
-            LogUtils.d("txt "+model.messageType);
-            mTvMessage.setText(model.message);
+            LogUtils.d("txt " + model.messageType);
+            SpannableStringBuilder sb = GifUtils.handler(mTvMessage, model.message);
+            mTvMessage.setText(sb);
         }
     }
+
+
 }
