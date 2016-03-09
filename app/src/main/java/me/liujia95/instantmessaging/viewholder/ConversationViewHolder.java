@@ -1,6 +1,7 @@
 package me.liujia95.instantmessaging.viewholder;
 
 import android.support.v7.widget.RecyclerView;
+import android.text.SpannableStringBuilder;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -15,6 +16,7 @@ import me.liujia95.instantmessaging.db.model.ConversationModel;
 import me.liujia95.instantmessaging.manager.RedPointManager;
 import me.liujia95.instantmessaging.utils.ConversationUtils;
 import me.liujia95.instantmessaging.utils.DateUtils;
+import me.liujia95.instantmessaging.utils.gif.GifUtils;
 
 /**
  * Created by Administrator on 2016/2/12 17:17.
@@ -53,7 +55,9 @@ public class ConversationViewHolder extends RecyclerView.ViewHolder {
         Date date = new Date(Long.valueOf(bean.date));
 
         mTvTitle.setText(chatObj);
-        mTvDesc.setText(bean.message);
+
+        SpannableStringBuilder sb = GifUtils.handler(mTvDesc, bean.message);
+        mTvDesc.setText(sb);
         String dateFormat = DateUtils.getDateFormat(date.getTime());
         mTvTime.setText(dateFormat);
     }

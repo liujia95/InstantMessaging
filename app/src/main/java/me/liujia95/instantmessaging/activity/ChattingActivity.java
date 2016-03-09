@@ -20,7 +20,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -34,6 +33,7 @@ import com.hyphenate.EMMessageListener;
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMMessage;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -47,6 +47,7 @@ import me.liujia95.instantmessaging.R;
 import me.liujia95.instantmessaging.adapter.ConversationAdapter;
 import me.liujia95.instantmessaging.adapter.FaceGVAdapter;
 import me.liujia95.instantmessaging.adapter.FaceVPAdapter;
+import me.liujia95.instantmessaging.adapter.TusijiGVAdapter;
 import me.liujia95.instantmessaging.db.dao.ConversationDao;
 import me.liujia95.instantmessaging.db.dao.RecentConversationDao;
 import me.liujia95.instantmessaging.db.model.ConversationModel;
@@ -88,22 +89,31 @@ public class ChattingActivity extends AppCompatActivity implements View.OnClickL
     @InjectView(R.id.root_layout)
     View         activityRootView;//Activity最外层的Layout视图
 
-
-    /**#################################################################**/
     /**
+     * #################################################################
      * 表情部分
      **/
 
-    @InjectView(R.id.face_viewpager)
-    ViewPager    mViewPager; //表情viewpager
+    @InjectView(R.id.face_emoji_viewpager)
+    ViewPager    mEmojiViewPager; //表情符号viewpager
+    @InjectView(R.id.face_tusiji_viewpager)
+    ViewPager    mTusijiViewPager; //兔斯基viewpager
     @InjectView(R.id.face_dots_container)
     LinearLayout mDotsLayout;   //表情下的小圆点
+    @InjectView(R.id.face_type_emoji)
+    ImageView    mIvTypeEmoji;     //表情符号图标
+    @InjectView(R.id.face_type_tusiji)
+    ImageView    mIvTypeTusiji;    //兔斯基图标
 
     private List<View> views = new ArrayList<View>(); //每一页表情的集合
-    private List<String> staticFacesList; //表情的数量
-    // 6列4行
-    private int columns = 6;
-    private int rows    = 4;
+    private List<String> staticFacesList; //表情符号的静态图片名称
+    // 7列3行
+    private int columns = 7;
+    private int rows    = 3;
+
+    private List<View> tusijiViews = new ArrayList<>();
+    private List<String> staticTusijiList; //兔斯基的静态图片名称
+    private int tusijiPagerCount = 2; //2页
 
     /**
      * ################################################################
@@ -132,10 +142,49 @@ public class ChattingActivity extends AppCompatActivity implements View.OnClickL
     }
 
     private void initView() {
+        //TODO：待优化
         //初始化表情列表staticFacesList
         initStaticFaces();
         //初始化表情
         initViewPager();
+
+        initTusiji();
+
+        mIvTypeEmoji.setSelected(true);
+    }
+
+    /**
+     * 初始化兔斯基
+     */
+    private void initTusiji() {
+        try {
+            staticTusijiList = new ArrayList<String>();
+            String[] faces = getAssets().list("tusiji/png");
+            //将Assets中的表情名称转为字符串一一添加进staticFacesList
+            for (int i = 0; i < faces.length; i++) {
+                staticTusijiList.add(faces[i]);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        for (int i = 0; i < tusijiPagerCount; i++) {
+            LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
+            View layout = inflater.inflate(R.layout.face_gridview, null);//表情布局
+            GridView gridview = (GridView) layout.findViewById(R.id.chart_face_gv);
+            gridview.setNumColumns(4);
+            List<String> subList = staticTusijiList.subList(i * staticTusijiList.size() / tusijiPagerCount, (i + 1) * staticTusijiList.size() / tusijiPagerCount);
+            gridview.setAdapter(new TusijiGVAdapter(subList, this));
+            gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                }
+            });
+
+            tusijiViews.add(gridview);
+        }
+        mTusijiViewPager.setAdapter(new FaceVPAdapter(tusijiViews));
+        mTusijiViewPager.setOnPageChangeListener(new PageChange());
     }
 
     //    @Override
@@ -176,7 +225,7 @@ public class ChattingActivity extends AppCompatActivity implements View.OnClickL
     private void initListener() {
         activityRootView.addOnLayoutChangeListener(this);
 
-        mViewPager.setOnPageChangeListener(new PageChange());
+        mEmojiViewPager.setOnPageChangeListener(new PageChange());
 
         mRecyclerview.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -275,6 +324,8 @@ public class ChattingActivity extends AppCompatActivity implements View.OnClickL
         mTvSend.setOnClickListener(this);
         mIvFace.setOnClickListener(this);
         mIvImg.setOnClickListener(this);
+        mIvTypeEmoji.setOnClickListener(this);
+        mIvTypeTusiji.setOnClickListener(this);
     }
 
     /**
@@ -298,7 +349,52 @@ public class ChattingActivity extends AppCompatActivity implements View.OnClickL
             Intent intent = new Intent(this, SwitchImgActivity.class);
             intent.putExtra(KEY_CHAT_OBJ, mChatObj);
             startActivityForResult(intent, REQUEST_CODE_SWITCH_IMAGE);
+        } else if (v == mIvTypeEmoji) {
+            clickTypeEmoji();
+        } else if (v == mIvTypeTusiji) {
+            clickTypeTusiji();
         }
+    }
+
+    /**
+     * 点击了兔斯基图标
+     */
+    private void clickTypeTusiji() {
+        mIvTypeTusiji.setSelected(true);
+        mIvTypeEmoji.setSelected(false);
+
+        mEmojiViewPager.setVisibility(View.GONE);
+        mTusijiViewPager.setVisibility(View.VISIBLE);
+
+
+        mDotsLayout.removeAllViews();
+        for (int i = 0; i < tusijiPagerCount; i++) {
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(12, 12);
+            params.leftMargin = UIUtils.dip2px(10);
+            mDotsLayout.addView(dotsItem(i), params); //小圆点的显示
+        }
+        //默认使圆点选中第一个
+        mDotsLayout.getChildAt(mTusijiViewPager.getCurrentItem()).setSelected(true);
+    }
+
+    /**
+     * 点击了表情符号图标
+     */
+    private void clickTypeEmoji() {
+        mIvTypeTusiji.setSelected(false);
+        mIvTypeEmoji.setSelected(true);
+
+        mEmojiViewPager.setVisibility(View.VISIBLE);
+        mTusijiViewPager.setVisibility(View.GONE);
+
+        mDotsLayout.removeAllViews();
+        for (int i = 0; i < getPagerCount(); i++) {
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(12, 12);
+            params.leftMargin = UIUtils.dip2px(10);
+            mDotsLayout.addView(dotsItem(i), params); //小圆点的显示
+        }
+        //默认使圆点选中第一个
+        mDotsLayout.getChildAt(mEmojiViewPager.getCurrentItem()).setSelected(true);
     }
 
     /**
@@ -494,13 +590,14 @@ public class ChattingActivity extends AppCompatActivity implements View.OnClickL
         // 获取页数
         for (int i = 0; i < getPagerCount(); i++) {
             views.add(viewPagerItem(i));//给每一页添加对应的表情
-            ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(16, 16);
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(12, 12);
+            params.leftMargin = UIUtils.dip2px(10);
             mDotsLayout.addView(dotsItem(i), params); //小圆点的显示
         }
         //给表情Viewpager的适配器添加表情
         FaceVPAdapter mVpAdapter = new FaceVPAdapter(views);
         //绑定适配器
-        mViewPager.setAdapter(mVpAdapter);
+        mEmojiViewPager.setAdapter(mVpAdapter);
         //默认使圆点选中第一个
         mDotsLayout.getChildAt(0).setSelected(true);
     }
@@ -516,6 +613,7 @@ public class ChattingActivity extends AppCompatActivity implements View.OnClickL
             for (int i = 0; i < faces.length; i++) {
                 staticFacesList.add(faces[i]);
             }
+
             //去掉删除图片
             staticFacesList.remove("emotion_del_normal.png");
         } catch (Exception e) {
@@ -537,12 +635,9 @@ public class ChattingActivity extends AppCompatActivity implements View.OnClickL
          * 注：因为每一页末尾都有一个删除图标，所以每一页的实际表情columns *　rows　－　1; 空出最后一个位置给删除图标
          * */
         List<String> subList = new ArrayList<String>();
-        subList.addAll(staticFacesList
-                .subList(position * (columns * rows - 1),
-                        (columns * rows - 1) * (position + 1) > staticFacesList
-                                .size() ? staticFacesList.size() : (columns
-                                * rows - 1)
-                                * (position + 1)));
+        subList.addAll(staticFacesList.subList(position * (columns * rows - 1),
+                (columns * rows - 1) * (position + 1) > staticFacesList.size() ?
+                        staticFacesList.size() : (columns * rows - 1) * (position + 1)));
         /**
          * 末尾添加删除图标
          * */
@@ -588,7 +683,7 @@ public class ChattingActivity extends AppCompatActivity implements View.OnClickL
         int iCursorStart = Selection.getSelectionStart((mEtInput.getText()));
         int iCursorEnd = Selection.getSelectionEnd((mEtInput.getText()));
         if (iCursorStart != iCursorEnd) {
-             mEtInput.getText().replace(iCursorStart, iCursorEnd, "");
+            mEtInput.getText().replace(iCursorStart, iCursorEnd, "");
         }
         int iCursor = Selection.getSelectionEnd((mEtInput.getText()));
         mEtInput.getText().insert(iCursor, text);
@@ -671,7 +766,6 @@ public class ChattingActivity extends AppCompatActivity implements View.OnClickL
         } catch (Exception e) {
             e.printStackTrace();
         }
-
         return sb;
     }
 

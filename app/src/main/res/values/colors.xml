@@ -21,4 +21,6 @@
     <color name="tab_text_gray">#999999</color>
 
     <color name="color_image_pressed">#77000000</color>
+
+    <color name="color_face_type_select">#22000000</color>
 </resources>

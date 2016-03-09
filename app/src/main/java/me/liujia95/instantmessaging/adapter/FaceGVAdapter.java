@@ -54,7 +54,7 @@ public class FaceGVAdapter extends BaseAdapter {
 		ViewHodler hodler;
 		if (convertView == null) {
 			hodler = new ViewHodler();
-			convertView = LayoutInflater.from(mContext).inflate(R.layout.face_image, null);
+			convertView = LayoutInflater.from(mContext).inflate(R.layout.item_face_image, null);
 			hodler.iv = (ImageView) convertView.findViewById(R.id.face_img);
 			hodler.tv = (TextView) convertView.findViewById(R.id.face_text);
 			convertView.setTag(hodler);
@@ -68,7 +68,6 @@ public class FaceGVAdapter extends BaseAdapter {
 			e.printStackTrace();
 		}
 		hodler.tv.setText("face/png/" + list.get(position));
-
 		return convertView;
 	}
 
