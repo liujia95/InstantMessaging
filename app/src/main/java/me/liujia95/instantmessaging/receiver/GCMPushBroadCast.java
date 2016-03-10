@@ -15,14 +15,16 @@ import me.liujia95.instantmessaging.utils.LogUtils;
 
 public class GCMPushBroadCast extends BroadcastReceiver {
 
-    public static final String NOTIFICATION_MESSAGE = "notification_message";
+    public static final String NOTIFICATION_MESSAGE  = "notification_message";
+    public static final String NOTIFICATION_CHAT_OBJ = "notification_chat_obj";
 
     @Override
     public void onReceive(Context context, Intent intent) {
         LogUtils.d("@@GCMPushBroadCast onReceive");
         String alert = intent.getStringExtra(NOTIFICATION_MESSAGE);
-        LogUtils.d("@@收到消息:"+alert);
-        sendNotification(context, alert, true);
+        String chatObj = intent.getStringExtra(NOTIFICATION_CHAT_OBJ);
+        LogUtils.d("@@收到消息:" + alert + " --" + chatObj);
+        sendNotification(context, alert, chatObj, true);
     }
 
     protected NotificationManager notificationManager = null;
@@ -30,7 +32,7 @@ public class GCMPushBroadCast extends BroadcastReceiver {
     protected static int notifyID           = 0525; // start notification id
     protected static int foregroundNotifyID = 0555;
 
-    public void sendNotification(Context context, String message, boolean isForeground) {
+    public void sendNotification(Context context, String message, String chatObj, boolean isForeground) {
 
         if (notificationManager == null) {
             notificationManager = (NotificationManager) context
@@ -44,11 +46,12 @@ public class GCMPushBroadCast extends BroadcastReceiver {
             String notifyText = message;
 
             PackageManager packageManager = context.getPackageManager();
-            String appname = (String) packageManager
-                    .getApplicationLabel(context.getApplicationInfo());
-
-            // notification titile
-            String contentTitle = appname;
+            //            String appname = (String) packageManager
+            //                    .getApplicationLabel(context.getApplicationInfo());
+            //
+            //            // notification titile
+            //            String contentTitle = appname;
+            String contentTitle = chatObj;
             String packageName = context.getApplicationInfo().packageName;
 
             Uri defaultSoundUrlUri = RingtoneManager

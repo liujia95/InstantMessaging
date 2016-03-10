@@ -38,6 +38,4 @@ public class ConversationSendTXTViewHolder extends RecyclerView.ViewHolder {
             mTvMessage.setText(sb);
         }
     }
-
-
 }

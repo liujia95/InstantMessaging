@@ -71,7 +71,6 @@ public class AnimatedImageSpan extends DynamicDrawableSpan {
         canvas.translate(x, transY);
         b.draw(canvas);
         canvas.restore();
-
     }
 
 }

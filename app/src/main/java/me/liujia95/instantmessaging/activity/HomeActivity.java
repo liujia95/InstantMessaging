@@ -196,7 +196,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
             public void onMessageReceived(List<EMMessage> messages) {
                 //收到消息
                 LogUtils.d("===收到消息：" + messages.size() + "个");
-                ConversationUtils.receiveImage(messages, mMessageListener);
+                ConversationUtils.receivedMessage(messages, mMessageListener);
             }
 
             @Override

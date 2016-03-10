@@ -13,6 +13,7 @@ import java.util.List;
 import me.liujia95.instantmessaging.R;
 import me.liujia95.instantmessaging.db.model.ConversationModel;
 import me.liujia95.instantmessaging.utils.UIUtils;
+import me.liujia95.instantmessaging.viewholder.ConversationReceivedFACEViewHolder;
 import me.liujia95.instantmessaging.viewholder.ConversationSendFACEViewHolder;
 import me.liujia95.instantmessaging.viewholder.ConversationSendIMAGEViewHolder;
 import me.liujia95.instantmessaging.viewholder.ConversationSendTXTViewHolder;
@@ -78,6 +79,9 @@ public class ConversationAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         } else if (viewType == TYPE_MY_FACE) {
             View view = LayoutInflater.from(UIUtils.getContext()).inflate(R.layout.item_conversation_send_face, parent, false);
             return new ConversationSendFACEViewHolder(view);
+        } else if (viewType == TYPE_YOUR_FACE) {
+            View view = LayoutInflater.from(UIUtils.getContext()).inflate(R.layout.item_conversation_received_face, parent, false);
+            return new ConversationReceivedFACEViewHolder(view);
         }
         return null;
     }
@@ -100,6 +104,9 @@ public class ConversationAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             viewholder.loadData(model);
         } else if (viewType == TYPE_MY_FACE) {
             ConversationSendFACEViewHolder viewholder = (ConversationSendFACEViewHolder) holder;
+            viewholder.loadData(model);
+        }else if(viewType == TYPE_YOUR_FACE){
+            ConversationReceivedFACEViewHolder viewholder = (ConversationReceivedFACEViewHolder) holder;
             viewholder.loadData(model);
         }
     }
