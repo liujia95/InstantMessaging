@@ -11,7 +11,6 @@ import butterknife.InjectView;
 import me.liujia95.instantmessaging.R;
 import me.liujia95.instantmessaging.db.model.ConversationModel;
 import me.liujia95.instantmessaging.utils.DateUtils;
-import me.liujia95.instantmessaging.utils.LogUtils;
 import me.liujia95.instantmessaging.view.GifView;
 
 /**
@@ -37,6 +36,7 @@ public class ConversationReceivedFACEViewHolder extends RecyclerView.ViewHolder 
         mGifvFace.setGifPath(model.message);
         if (isShowTime) {
             mTvDate.setText(DateUtils.getDateFormat(model.date));
+            mContainer.setVisibility(View.VISIBLE);
         } else {
             mContainer.setVisibility(View.GONE);
         }

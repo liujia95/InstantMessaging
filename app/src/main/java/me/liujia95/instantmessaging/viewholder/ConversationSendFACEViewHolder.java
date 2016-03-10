@@ -35,6 +35,7 @@ public class ConversationSendFACEViewHolder extends RecyclerView.ViewHolder {
         mGifvFace.setGifAssets(gif);
         if (isShowTime) {
             mTvDate.setText(DateUtils.getDateFormat(model.date));
+            mContainer.setVisibility(View.VISIBLE);
         } else {
             mContainer.setVisibility(View.GONE);
         }

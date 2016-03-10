@@ -80,6 +80,7 @@ public class ConversationReceivedIMAGEViewHolder extends RecyclerView.ViewHolder
         });
         if (isShowTime) {
             mTvDate.setText(DateUtils.getDateFormat(model.date));
+            mContainer.setVisibility(View.VISIBLE);
         } else {
             mContainer.setVisibility(View.GONE);
         }

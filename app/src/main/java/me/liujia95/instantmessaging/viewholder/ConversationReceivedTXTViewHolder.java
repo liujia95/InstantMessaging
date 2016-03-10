@@ -7,8 +7,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.hyphenate.chat.EMMessage;
-
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import me.liujia95.instantmessaging.R;
@@ -40,6 +38,7 @@ public class ConversationReceivedTXTViewHolder extends RecyclerView.ViewHolder {
         mTvMessage.setText(sb);
         if (isShowTime) {
             mTvDate.setText(DateUtils.getDateFormat(model.date));
+            mContainer.setVisibility(View.VISIBLE);
         } else {
             mContainer.setVisibility(View.GONE);
         }

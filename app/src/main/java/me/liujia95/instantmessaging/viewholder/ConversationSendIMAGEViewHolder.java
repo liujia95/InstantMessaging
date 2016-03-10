@@ -7,7 +7,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.hyphenate.chat.EMMessage;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.download.ImageDownloader;
@@ -17,7 +16,6 @@ import butterknife.InjectView;
 import me.liujia95.instantmessaging.R;
 import me.liujia95.instantmessaging.db.model.ConversationModel;
 import me.liujia95.instantmessaging.utils.DateUtils;
-import me.liujia95.instantmessaging.utils.LogUtils;
 import me.liujia95.instantmessaging.view.BubbleImageView;
 
 /**
@@ -53,6 +51,7 @@ public class ConversationSendIMAGEViewHolder extends RecyclerView.ViewHolder {
 
         if (isShowTime) {
             mTvDate.setText(DateUtils.getDateFormat(model.date));
+            mContainer.setVisibility(View.VISIBLE);
         } else {
             mContainer.setVisibility(View.GONE);
         }

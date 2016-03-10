@@ -13,6 +13,7 @@ import java.util.List;
 import me.liujia95.instantmessaging.R;
 import me.liujia95.instantmessaging.db.model.ConversationModel;
 import me.liujia95.instantmessaging.utils.DateUtils;
+import me.liujia95.instantmessaging.utils.LogUtils;
 import me.liujia95.instantmessaging.utils.UIUtils;
 import me.liujia95.instantmessaging.viewholder.ConversationReceivedFACEViewHolder;
 import me.liujia95.instantmessaging.viewholder.ConversationSendFACEViewHolder;

@@ -39,6 +39,7 @@ public class ConversationSendTXTViewHolder extends RecyclerView.ViewHolder {
         mTvMessage.setText(sb);
         if (isShowTime) {
             mTvDate.setText(DateUtils.getDateFormat(model.date));
+            mContainer.setVisibility(View.VISIBLE);
         } else {
             mContainer.setVisibility(View.GONE);
         }
