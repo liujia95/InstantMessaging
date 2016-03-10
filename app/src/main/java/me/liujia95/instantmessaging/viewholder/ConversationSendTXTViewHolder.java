@@ -4,15 +4,14 @@ import android.support.v7.widget.RecyclerView;
 import android.text.SpannableStringBuilder;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
-
-import com.hyphenate.chat.EMMessage;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import me.liujia95.instantmessaging.R;
 import me.liujia95.instantmessaging.db.model.ConversationModel;
-import me.liujia95.instantmessaging.utils.LogUtils;
+import me.liujia95.instantmessaging.utils.DateUtils;
 import me.liujia95.instantmessaging.utils.gif.GifUtils;
 
 /**
@@ -21,9 +20,13 @@ import me.liujia95.instantmessaging.utils.gif.GifUtils;
 public class ConversationSendTXTViewHolder extends RecyclerView.ViewHolder {
 
     @InjectView(R.id.item_conversation_my_txt_tv_message)
-    TextView  mTvMessage;
+    TextView     mTvMessage;
     @InjectView(R.id.item_conversation_my_txt_iv_icon)
-    ImageView mIvIcon;
+    ImageView    mIvIcon;
+    @InjectView(R.id.item_system_message_tv)
+    TextView     mTvDate;
+    @InjectView(R.id.item_system_message_container)
+    LinearLayout mContainer;
 
 
     public ConversationSendTXTViewHolder(View itemView) {
@@ -31,11 +34,13 @@ public class ConversationSendTXTViewHolder extends RecyclerView.ViewHolder {
         ButterKnife.inject(this, itemView);
     }
 
-    public void loadData(ConversationModel model) {
-        if (model.messageType == EMMessage.Type.TXT) {
-            LogUtils.d("txt " + model.messageType);
-            SpannableStringBuilder sb = GifUtils.faceHandler(mTvMessage, model.message);
-            mTvMessage.setText(sb);
+    public void loadData(ConversationModel model, boolean isShowTime) {
+        SpannableStringBuilder sb = GifUtils.faceHandler(mTvMessage, model.message);
+        mTvMessage.setText(sb);
+        if (isShowTime) {
+            mTvDate.setText(DateUtils.getDateFormat(model.date));
+        } else {
+            mContainer.setVisibility(View.GONE);
         }
     }
 }

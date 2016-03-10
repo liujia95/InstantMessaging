@@ -12,6 +12,7 @@ import java.util.List;
 
 import me.liujia95.instantmessaging.R;
 import me.liujia95.instantmessaging.db.model.ConversationModel;
+import me.liujia95.instantmessaging.utils.DateUtils;
 import me.liujia95.instantmessaging.utils.UIUtils;
 import me.liujia95.instantmessaging.viewholder.ConversationReceivedFACEViewHolder;
 import me.liujia95.instantmessaging.viewholder.ConversationSendFACEViewHolder;
@@ -90,24 +91,31 @@ public class ConversationAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         int viewType = getItemViewType(position);
         ConversationModel model = mDatas.get(position);
+
+        long preTime = 0;
+        if (position > 0) {
+            preTime = mDatas.get(position - 1).date;
+        }
+        boolean isShowTime = DateUtils.isShowTime(preTime, model.date);
+
         if (viewType == TYPE_MY_TXT) {
             ConversationSendTXTViewHolder viewholder = (ConversationSendTXTViewHolder) holder;
-            viewholder.loadData(model);
+            viewholder.loadData(model, isShowTime);
         } else if (viewType == TYPE_YOUR_TXT) {
             ConversationReceivedTXTViewHolder viewholder = (ConversationReceivedTXTViewHolder) holder;
-            viewholder.loadData(model);
+            viewholder.loadData(model, isShowTime);
         } else if (viewType == TYPE_MY_IMAGE) {
             ConversationSendIMAGEViewHolder viewholder = (ConversationSendIMAGEViewHolder) holder;
-            viewholder.loadData(model);
+            viewholder.loadData(model, isShowTime);
         } else if (viewType == TYPE_YOUR_IMAGE) {
             ConversationReceivedIMAGEViewHolder viewholder = (ConversationReceivedIMAGEViewHolder) holder;
-            viewholder.loadData(model);
+            viewholder.loadData(model, isShowTime);
         } else if (viewType == TYPE_MY_FACE) {
             ConversationSendFACEViewHolder viewholder = (ConversationSendFACEViewHolder) holder;
-            viewholder.loadData(model);
-        }else if(viewType == TYPE_YOUR_FACE){
+            viewholder.loadData(model, isShowTime);
+        } else if (viewType == TYPE_YOUR_FACE) {
             ConversationReceivedFACEViewHolder viewholder = (ConversationReceivedFACEViewHolder) holder;
-            viewholder.loadData(model);
+            viewholder.loadData(model, isShowTime);
         }
     }
 

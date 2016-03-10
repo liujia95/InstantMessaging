@@ -37,7 +37,6 @@ public class GifUtils {
                 sb.setSpan(new AnimatedImageSpan(new AnimatedGifDrawable(is, new AnimatedGifDrawable.UpdateListener() {
                             @Override
                             public void update() {
-                                LogUtils.d("@@@@@@@@@---faceHandler");
                                 gifTextView.postInvalidate();
                             }
                         })), m.start(), m.end(),

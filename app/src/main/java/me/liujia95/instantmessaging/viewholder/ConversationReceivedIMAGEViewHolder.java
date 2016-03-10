@@ -7,8 +7,9 @@ import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
-import com.hyphenate.chat.EMMessage;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
@@ -17,6 +18,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import me.liujia95.instantmessaging.R;
 import me.liujia95.instantmessaging.db.model.ConversationModel;
+import me.liujia95.instantmessaging.utils.DateUtils;
 import me.liujia95.instantmessaging.utils.LogUtils;
 import me.liujia95.instantmessaging.utils.UIUtils;
 import me.liujia95.instantmessaging.view.BubbleImageView;
@@ -31,7 +33,10 @@ public class ConversationReceivedIMAGEViewHolder extends RecyclerView.ViewHolder
     @InjectView(R.id.item_conversation_your_image_iv_img)
     BubbleImageView mIvImg;
     private GestureDetector mDetector;
-
+    @InjectView(R.id.item_system_message_tv)
+    TextView     mTvDate;
+    @InjectView(R.id.item_system_message_container)
+    LinearLayout mContainer;
 
     public ConversationReceivedIMAGEViewHolder(View itemView) {
         super(itemView);
@@ -58,23 +63,25 @@ public class ConversationReceivedIMAGEViewHolder extends RecyclerView.ViewHolder
         });
     }
 
-    public void loadData(ConversationModel model) {
-        if (model.messageType == EMMessage.Type.IMAGE) {
-            LogUtils.d("@@model:" + model.message);
-            //显示图片的配置
-            DisplayImageOptions options = new DisplayImageOptions.Builder()
-                    .cacheInMemory(true)
-                    .cacheOnDisk(true)
-                    .bitmapConfig(Bitmap.Config.RGB_565)
-                    .build();
+    public void loadData(ConversationModel model, boolean isShowTime) {
+        //显示图片的配置
+        DisplayImageOptions options = new DisplayImageOptions.Builder()
+                .cacheInMemory(true)
+                .cacheOnDisk(true)
+                .bitmapConfig(Bitmap.Config.RGB_565)
+                .build();
 
-            ImageLoader.getInstance().loadImage(model.message, options,new SimpleImageLoadingListener() {
-                @Override
-                public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-                    super.onLoadingComplete(imageUri, view, loadedImage);
-                    mIvImg.setImageBitmap(loadedImage);
-                }
-            });
+        ImageLoader.getInstance().loadImage(model.message, options, new SimpleImageLoadingListener() {
+            @Override
+            public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                super.onLoadingComplete(imageUri, view, loadedImage);
+                mIvImg.setImageBitmap(loadedImage);
+            }
+        });
+        if (isShowTime) {
+            mTvDate.setText(DateUtils.getDateFormat(model.date));
+        } else {
+            mContainer.setVisibility(View.GONE);
         }
     }
 

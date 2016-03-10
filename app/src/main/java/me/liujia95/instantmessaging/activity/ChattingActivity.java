@@ -198,7 +198,7 @@ public class ChattingActivity extends AppCompatActivity implements View.OnClickL
                     ConversationDao.insert(model);
 
                     //发送表情
-                    ConversationUtils.sendGifFaceAssets(mChatObj, content);
+                    //ConversationUtils.sendGifFaceAssets(mChatObj, content);
 
                     mDatas.add(model);
                     mAdapter.notifyDataSetChanged();

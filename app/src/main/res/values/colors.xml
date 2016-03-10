@@ -23,4 +23,6 @@
     <color name="color_image_pressed">#77000000</color>
 
     <color name="color_face_type_select">#22000000</color>
+
+    <color name="color_system_message_bg">#33000000</color>
 </resources>

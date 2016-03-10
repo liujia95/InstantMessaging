@@ -2,39 +2,47 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
-              android:padding="3dp"
               android:background="@color/colorConversationBg"
-              android:orientation="horizontal">
+              android:orientation="vertical"
+              android:padding="3dp">
+
+    <include layout="@layout/include_system_message"/>
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <ImageView
-            android:src="@drawable/em_default_avatar"
-            android:id="@+id/item_conversation_your_txt_iv_icon"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_margin="5dp"
-            />
-
-        <TextView
-            android:id="@+id/item_conversation_your_txt_tv_message"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:background="@drawable/your_bubble_selector"
-            android:clickable="true"
-            android:maxWidth="240dp"
-            android:paddingLeft="15dp"
-            android:paddingRight="10dp"
-            android:layout_marginTop="3dp"
-            android:gravity="center_vertical"
-            android:lineSpacingMultiplier="1.2"
-            android:text="AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-            android:textColor="#DD000000"
-            android:textSize="15sp"/>
-    </LinearLayout>
+            android:orientation="horizontal">
 
+            <ImageView
+                android:id="@+id/item_conversation_your_txt_iv_icon"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_margin="5dp"
+                android:src="@drawable/em_default_avatar"
+                />
+
+            <TextView
+                android:id="@+id/item_conversation_your_txt_tv_message"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginTop="3dp"
+                android:background="@drawable/your_bubble_selector"
+                android:clickable="true"
+                android:gravity="center_vertical"
+                android:lineSpacingMultiplier="1.2"
+                android:maxWidth="240dp"
+                android:paddingLeft="15dp"
+                android:paddingRight="10dp"
+                android:text="AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                android:textColor="#DD000000"
+                android:textSize="15sp"/>
+        </LinearLayout>
+
+    </LinearLayout>
 </LinearLayout>

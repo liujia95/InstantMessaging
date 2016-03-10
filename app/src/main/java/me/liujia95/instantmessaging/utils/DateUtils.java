@@ -10,9 +10,12 @@ import java.util.Date;
 public class DateUtils {
     private static Calendar mCalendar = Calendar.getInstance();
 
+    public static final long FIVE_MINUTE = 5 * 60 * 1000; //5分钟
+
     /**
      * 昨天：前一天的00：00 到 前一天 23：59之间
      * TODO:判断年份
+     *
      * @param millis
      * @return
      */
@@ -89,5 +92,16 @@ public class DateUtils {
             return true;
         }
         return false;
+    }
+
+    /**
+     * 时间是否要显示
+     *
+     * @param preTime  上一条的时间
+     * @param lastTime 最新的时间
+     * @return
+     */
+    public static boolean isShowTime(long preTime, long lastTime) {
+        return (lastTime - preTime) >= FIVE_MINUTE;
     }
 }
