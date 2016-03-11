@@ -11,6 +11,8 @@ import butterknife.InjectView;
 import me.liujia95.instantmessaging.R;
 import me.liujia95.instantmessaging.db.model.ConversationModel;
 import me.liujia95.instantmessaging.utils.DateUtils;
+import me.liujia95.instantmessaging.utils.FaceUtils;
+import me.liujia95.instantmessaging.utils.LogUtils;
 import me.liujia95.instantmessaging.view.GifView;
 
 /**
@@ -33,7 +35,14 @@ public class ConversationReceivedFACEViewHolder extends RecyclerView.ViewHolder 
     }
 
     public void loadData(ConversationModel model, boolean isShowTime) {
-        mGifvFace.setGifPath(model.message);
+        String path = model.message;
+        if(FaceUtils.isFace(model.message)){
+            path = FaceUtils.unpack(path);
+            mGifvFace.setGifAssets(path);
+        }else{
+            mGifvFace.setGifPath(path);
+        }
+        LogUtils.d("@@ path:"+path);
         if (isShowTime) {
             mTvDate.setText(DateUtils.getDateFormatToChatting(model.date));
             mContainer.setVisibility(View.VISIBLE);

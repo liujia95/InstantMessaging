@@ -93,7 +93,7 @@ public class GifView extends FrameLayout {
 
     public void setGifPath(String path) {
         WebGifView webGifView = (WebGifView) findViewById(R.id.web_gif_view);
-        //path = "file:///" + path;
+        path = "file:///" + path;
         webGifView.setGifPath(path);
         this.imageUri = path;
     }

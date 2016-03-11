@@ -4,13 +4,10 @@ import android.content.Intent;
 import android.widget.Toast;
 
 import com.hyphenate.chat.EMClient;
-import com.hyphenate.chat.EMCmdMessageBody;
 import com.hyphenate.chat.EMMessage;
 
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import me.liujia95.instantmessaging.activity.ChattingActivity;
 import me.liujia95.instantmessaging.activity.HomeActivity;
@@ -19,6 +16,7 @@ import me.liujia95.instantmessaging.db.dao.RecentConversationDao;
 import me.liujia95.instantmessaging.db.model.ConversationModel;
 import me.liujia95.instantmessaging.db.model.MessageState;
 import me.liujia95.instantmessaging.receiver.GCMPushBroadCast;
+import me.liujia95.instantmessaging.utils.gif.GifUtils;
 
 import static com.hyphenate.chat.EMMessage.Type;
 import static com.hyphenate.chat.EMMessage.Type.IMAGE;
@@ -80,6 +78,10 @@ public class ConversationUtils {
                 break;
             case TXT:
                 body = body.substring((body.indexOf("\"") + 1), body.lastIndexOf("\""));
+                LogUtils.d("@@ is face:" + FaceUtils.isFace(body));
+                if (FaceUtils.isFace(body)) {
+                    model.messageType = Type.CMD;
+                }
                 break;
             case CMD:
                 Toast.makeText(UIUtils.getContext(), body, Toast.LENGTH_LONG).show();
@@ -97,6 +99,7 @@ public class ConversationUtils {
      * @param chatObj       聊天对象
      * @return 选中的图片数
      */
+
     public static int sendImage(List<String> selectedImage, String chatObj) {
         int count = 0;
         for (String imagePath : selectedImage) {
@@ -163,6 +166,10 @@ public class ConversationUtils {
                     break;
             }
 
+            if (FaceUtils.isFace(model.message)) {
+                model.message = "[动画表情]";
+            }
+
             if (RecentConversationDao.isChated(message.getFrom())) {
                 //如果跟他聊过，更新最新聊天记录
                 RecentConversationDao.update(model, message.getFrom());
@@ -174,7 +181,7 @@ public class ConversationUtils {
             if (!UIUtils.getRunningActivityName().equals(ChattingActivity.class.getName())) {
                 Intent intent = new Intent();
                 intent.putExtra(GCMPushBroadCast.NOTIFICATION_MESSAGE, model.message);
-                intent.putExtra(GCMPushBroadCast.NOTIFICATION_CHAT_OBJ,model.from);
+                intent.putExtra(GCMPushBroadCast.NOTIFICATION_CHAT_OBJ, model.from);
                 intent.setAction("com.hyphenate.sdk.push");
                 intent.addCategory("com.hyphenate.chatuidemo");
                 UIUtils.getContext().sendBroadcast(intent);
@@ -189,25 +196,24 @@ public class ConversationUtils {
      * 发送本地的动态表情
      */
     public static void sendGifFaceAssets(final String toUsername, final String assetsName) {
-        EMMessage cmdMsg = EMMessage.createSendMessage(EMMessage.Type.CMD);
-
-        Map<String, String> map = new HashMap<>();
-        map.put(KEY_ASSETS_NAME, assetsName);
-
-        String action = "face";//action可以自定义
-        EMCmdMessageBody cmdBody = new EMCmdMessageBody(action, map);
-        cmdMsg.setReceipt(toUsername);//发送给某个人
-        cmdMsg.addBody(cmdBody);
-        EMClient.getInstance().chatManager().sendMessage(cmdMsg);
-        LogUtils.d("@@已发送透传消息" + cmdBody);
+        //imagePath为图片本地路径，false为不发送原图(默认超过100k的图片会压缩后发给对方),需要发送原图传false
+        EMMessage message = EMMessage.createTxtSendMessage(FaceUtils.pack(GifUtils.getLocalFacePath(assetsName)), toUsername);
+        //发送消息
+        EMClient.getInstance().chatManager().sendMessage(message);
     }
 
-    /**
-     * 发送静态表情
-     *
-     * @param toUsername
-     */
-    public static void sendStaticFace(String toUsername) {
+    //    public static void sendGifFaceAssets(final String toUsername, final String assetsName) {
+    //        EMMessage cmdMsg = EMMessage.createSendMessage(EMMessage.Type.CMD);
+    //
+    //        Map<String, String> map = new HashMap<>();
+    //        map.put(KEY_ASSETS_NAME, assetsName);
+    //
+    //        String action = "face";//action可以自定义
+    //        EMCmdMessageBody cmdBody = new EMCmdMessageBody(action, map);
+    //        cmdMsg.setReceipt(toUsername);//发送给某个人
+    //        cmdMsg.addBody(cmdBody);
+    //        EMClient.getInstance().chatManager().sendMessage(cmdMsg);
+    //        LogUtils.d("@@已发送透传消息" + cmdBody);
+    //    }
 
-    }
 }

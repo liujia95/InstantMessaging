@@ -12,7 +12,6 @@ import java.io.InputStream;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import me.liujia95.instantmessaging.utils.LogUtils;
 import me.liujia95.instantmessaging.utils.UIUtils;
 
 /**
@@ -74,5 +73,13 @@ public class GifUtils {
             e.printStackTrace();
         }
         return null;
+    }
+
+    /**
+     * 获取本地表情路径
+     * @return
+     */
+    public static String getLocalFacePath(String assetsName){
+        return "tusiji/gif/" + assetsName.replace("t_static_", "t_").replace(".png", ".gif");
     }
 }

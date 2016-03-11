@@ -5,10 +5,8 @@ import android.widget.ImageView;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 import me.liujia95.instantmessaging.bean.RedPointBean;
-import me.liujia95.instantmessaging.utils.LogUtils;
 import me.liujia95.instantmessaging.utils.UIUtils;
 
 /**
@@ -59,24 +57,15 @@ public class RedPointManager {
         return mMap.get(name);
     }
 
-    public void show(String name) {
-        LogUtils.d("@@ show name:" + name);
+    public synchronized void show(String name) {
         RedPointBean bean = get(name);
         bean.isShow = true;//在这需要把数据更改
 
         final ImageView iv = bean.ivRedPoint;
-        if (bean.isShow) {
+        if (iv.getVisibility() == View.GONE) {
             UIUtils.post(new Runnable() {
                 @Override
                 public void run() {
-                    LogUtils.d("@@ show iv:" + iv);
-                    Set<Map.Entry<String, RedPointBean>> entries = mMap.entrySet();
-                    LogUtils.d("@@------------------------");
-                    for (Map.Entry<String, RedPointBean> entry : entries) {
-                        LogUtils.d("@@ name-->" + entry.getKey() + " iv-->" + entry.getValue().ivRedPoint.toString());
-                    }
-                    LogUtils.d("@@------------------------");
-
                     iv.setVisibility(View.VISIBLE);
                 }
             });
