@@ -50,7 +50,7 @@ public class ConversationSendIMAGEViewHolder extends RecyclerView.ViewHolder {
         ImageLoader.getInstance().displayImage(imageUrl, mIvImg, options);
 
         if (isShowTime) {
-            mTvDate.setText(DateUtils.getDateFormat(model.date));
+            mTvDate.setText(DateUtils.getDateFormatToChatting(model.date));
             mContainer.setVisibility(View.VISIBLE);
         } else {
             mContainer.setVisibility(View.GONE);

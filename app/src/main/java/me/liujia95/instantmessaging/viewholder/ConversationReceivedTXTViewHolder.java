@@ -37,7 +37,7 @@ public class ConversationReceivedTXTViewHolder extends RecyclerView.ViewHolder {
         SpannableStringBuilder sb = GifUtils.faceHandler(mTvMessage, model.message);
         mTvMessage.setText(sb);
         if (isShowTime) {
-            mTvDate.setText(DateUtils.getDateFormat(model.date));
+            mTvDate.setText(DateUtils.getDateFormatToChatting(model.date));
             mContainer.setVisibility(View.VISIBLE);
         } else {
             mContainer.setVisibility(View.GONE);

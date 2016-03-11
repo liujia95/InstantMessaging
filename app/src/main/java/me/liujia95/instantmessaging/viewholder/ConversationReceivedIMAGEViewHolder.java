@@ -78,8 +78,9 @@ public class ConversationReceivedIMAGEViewHolder extends RecyclerView.ViewHolder
                 mIvImg.setImageBitmap(loadedImage);
             }
         });
+
         if (isShowTime) {
-            mTvDate.setText(DateUtils.getDateFormat(model.date));
+            mTvDate.setText(DateUtils.getDateFormatToChatting(model.date));
             mContainer.setVisibility(View.VISIBLE);
         } else {
             mContainer.setVisibility(View.GONE);

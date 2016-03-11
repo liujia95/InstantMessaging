@@ -49,7 +49,7 @@ public class ConversationUtils {
     public static void ergodicConvertion(List<ConversationModel> list) {
         for (ConversationModel model : list) {
             LogUtils.d("**------------------------");
-            LogUtils.d("**date:" + DateUtils.getDateFormat(model.date));
+            LogUtils.d("**date:" + DateUtils.getDateFormatToChatting(model.date));
             LogUtils.d("**type:" + model.messageType);
             LogUtils.d("**state:" + model.messageState);
             LogUtils.d("**from:" + model.from);
@@ -199,7 +199,7 @@ public class ConversationUtils {
         cmdMsg.setReceipt(toUsername);//发送给某个人
         cmdMsg.addBody(cmdBody);
         EMClient.getInstance().chatManager().sendMessage(cmdMsg);
-        LogUtils.d("@@已发送" + cmdBody);
+        LogUtils.d("@@已发送透传消息" + cmdBody);
     }
 
     /**
