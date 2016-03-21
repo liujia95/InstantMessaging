@@ -21,7 +21,7 @@
             android:layout_alignParentRight="true"
             android:orientation="horizontal">
 
-            <me.liujia95.instantmessaging.view.BubbleImageView
+            <com.azusasoft.suyan.view.BubbleImageView
                 android:id="@+id/item_conversation_my_image_iv_img"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

@@ -19,11 +19,11 @@
             android:layout_alignParentRight="true"
             android:orientation="horizontal">
 
-            <me.liujia95.instantmessaging.view.GifView
+            <com.azusasoft.suyan.view.GifView
                 android:id="@+id/item_conversation_my_face_gifv_face"
                 android:layout_width="80dp"
                 android:layout_height="80dp">
-            </me.liujia95.instantmessaging.view.GifView>
+            </com.azusasoft.suyan.view.GifView>
 
             <ImageView
                 android:id="@+id/item_conversation_my_face_iv_icon"

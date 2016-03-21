@@ -8,7 +8,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center">
 
-        <me.liujia95.instantmessaging.view.WebGifView
+        <com.azusasoft.suyan.view.WebGifView
             android:id="@+id/web_gif_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

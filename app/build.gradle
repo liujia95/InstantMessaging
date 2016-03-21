@@ -5,7 +5,7 @@ android {
     buildToolsVersion "23.0.0 rc3"
 
     defaultConfig {
-        applicationId "me.liujia95.instantmessaging"
+        applicationId "com.azusasoft.suyan"
         minSdkVersion 14
         targetSdkVersion 22
         versionCode 1
@@ -35,5 +35,5 @@ dependencies {
     compile 'com.jakewharton:butterknife:5.1.1'
     compile project(':gradientuilibrary')
     compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
-    compile project(':gifImageViewlibrary')
+    compile files('libs/MiPush_SDK_Client_2_2_21.jar')
 }

@@ -13,7 +13,7 @@
         android:scrollbars="none">
     </android.support.v7.widget.RecyclerView>
 
-    <me.liujia95.instantmessaging.view.SlideBar
+    <com.azusasoft.suyan.view.SlideBar
         android:id="@+id/friendlist_slidebar"
         android:layout_width="20dp"
         android:layout_height="fill_parent"

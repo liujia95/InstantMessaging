@@ -28,7 +28,7 @@
                 android:layout_margin="5dp"
                 android:src="@drawable/em_default_avatar"/>
 
-            <me.liujia95.instantmessaging.view.BubbleImageView
+            <com.azusasoft.suyan.view.BubbleImageView
                 android:id="@+id/item_conversation_your_image_iv_img"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
